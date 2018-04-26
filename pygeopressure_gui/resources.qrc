@@ -1,0 +1,9 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+<file alias="icon.png">resources/img/pygeo_512_512.png</file>
+<file alias="survey_icon.png">resources/img/survey_icon_512_512.png</file>
+<!-- <file>help/editmenu.html</file>
+<file>help/filemenu.html</file>
+<file>help/index.html</file> -->
+</qresource>
+</RCC>

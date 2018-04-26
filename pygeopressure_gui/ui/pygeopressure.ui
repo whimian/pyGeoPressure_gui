@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <author>yuhao</author>
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1068</width>
+    <height>628</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>pyGeoPressure</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="opaqueResize">
+       <bool>true</bool>
+      </property>
+      <widget class="QTreeWidget" name="DataTree">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>40</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>252</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string extracomment="Data Treeview"/>
+       </property>
+       <column>
+        <property name="text">
+         <string notr="true">1</string>
+        </property>
+       </column>
+      </widget>
+      <widget class="QTabWidget" name="tabWidget">
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="tab_well">
+        <attribute name="title">
+         <string>Well 2D</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tab_seis">
+        <attribute name="title">
+         <string>Seismic 3D</string>
+        </attribute>
+       </widget>
+      </widget>
+      <widget class="QToolBox" name="toolBox">
+       <property name="minimumSize">
+        <size>
+         <width>250</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>300</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="page_eaton">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>260</width>
+          <height>488</height>
+         </rect>
+        </property>
+        <property name="accessibleName">
+         <string/>
+        </property>
+        <attribute name="label">
+         <string>Eaton</string>
+        </attribute>
+        <widget class="QWidget" name="gridLayoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>10</y>
+           <width>241</width>
+           <height>103</height>
+          </rect>
+         </property>
+         <layout class="QFormLayout" name="formLayout">
+          <property name="labelAlignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Wells</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="comboBox"/>
+          </item>
+          <item row="3" column="1">
+           <widget class="QPushButton" name="pushButton">
+            <property name="text">
+             <string>Calculate</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>50</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="2" column="1">
+           <widget class="QSpinBox" name="spinBox"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>N</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="page_bowers">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>260</width>
+          <height>488</height>
+         </rect>
+        </property>
+        <attribute name="label">
+         <string>Bowers</string>
+        </attribute>
+        <widget class="QWidget" name="formLayoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>10</y>
+           <width>241</width>
+           <height>188</height>
+          </rect>
+         </property>
+         <layout class="QFormLayout" name="formLayout_2">
+          <property name="labelAlignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="wellLabel">
+            <property name="text">
+             <string>Well</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="wellComboBox"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="aLabel">
+            <property name="text">
+             <string>a</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="aLineEdit"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="bLabel">
+            <property name="text">
+             <string>b</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="bLineEdit"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="uLabel">
+            <property name="text">
+             <string>U</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="uLineEdit"/>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="vmaxLabel">
+            <property name="text">
+             <string>Vmax</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QLineEdit" name="vmaxLineEdit"/>
+          </item>
+          <item row="5" column="1">
+           <widget class="QPushButton" name="pushButton_2">
+            <property name="text">
+             <string>Calculate</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>50</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="page_produce">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>260</width>
+          <height>488</height>
+         </rect>
+        </property>
+        <attribute name="label">
+         <string>Production</string>
+        </attribute>
+       </widget>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1068</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuData">
+    <property name="title">
+     <string>Data</string>
+    </property>
+    <widget class="QMenu" name="menuImport">
+     <property name="title">
+      <string>Import</string>
+     </property>
+     <addaction name="actionWell_Log"/>
+     <addaction name="actionSeismic"/>
+    </widget>
+    <addaction name="menuImport"/>
+    <addaction name="actionOutput"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout"/>
+    <addaction name="actionDocumentation"/>
+   </widget>
+   <widget class="QMenu" name="menuWindow">
+    <property name="title">
+     <string>Scene</string>
+    </property>
+    <addaction name="action2D_Time"/>
+    <addaction name="action3D_Depth"/>
+    <addaction name="separator"/>
+    <addaction name="action2D_Depth"/>
+    <addaction name="action3D_Depth_2"/>
+   </widget>
+   <widget class="QMenu" name="menuSurvey">
+    <property name="title">
+     <string>Survey</string>
+    </property>
+    <addaction name="actionSelectSurvey"/>
+    <addaction name="actionNewSurvey"/>
+    <addaction name="actionOpen_2"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <addaction name="menuSurvey"/>
+   <addaction name="menuData"/>
+   <addaction name="menuWindow"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionImport">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Import</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionOutput">
+   <property name="text">
+    <string>Output</string>
+   </property>
+  </action>
+  <action name="actionWell_Log">
+   <property name="text">
+    <string>Well Log</string>
+   </property>
+  </action>
+  <action name="actionSeismic">
+   <property name="text">
+    <string>Seismic</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="action2D_Time">
+   <property name="text">
+    <string>2D - Time</string>
+   </property>
+  </action>
+  <action name="action3D_Depth">
+   <property name="text">
+    <string>3D - Time</string>
+   </property>
+  </action>
+  <action name="action2D_Depth">
+   <property name="text">
+    <string>2D - Depth</string>
+   </property>
+  </action>
+  <action name="action3D_Depth_2">
+   <property name="text">
+    <string>3D - Depth</string>
+   </property>
+  </action>
+  <action name="actionNew">
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionNewSurvey">
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
+  <action name="actionDocumentation">
+   <property name="text">
+    <string>Documentation</string>
+   </property>
+  </action>
+  <action name="actionOpen_2">
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionSelectSurvey">
+   <property name="text">
+    <string>Select/Setup</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>actionExit</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>533</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
