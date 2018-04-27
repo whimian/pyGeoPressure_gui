@@ -78,7 +78,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         layout2.addWidget(self.matplotlib_widget)
 
         # self.mayavi_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.init_treeview()
+        self.populate_treeWidget()
         self.show()
 
     # def _read_program_setting(self):
@@ -160,9 +160,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         well_plot_control = WellPlotter(self.matplotlib_widget.fig, log_test)
         well_plot_control.plot_well_log()
 
-    def init_treeview(self):
+    def populate_treeWidget(self):
         survey_file = Path(CONF.data_root, CONF.current_survey, '.survey')
         if survey_file.exists():
+            self.DataTree.clear()
             self.DataTree.setHeaderLabel(CONF.current_survey)
             # populate seismic data
             seis_data = QTreeWidgetItem(self.DataTree)
@@ -223,7 +224,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def surveySelectEvent(self, event):
         survey_select_dialog = SurveySelectDialog()
+        survey_select_dialog.selectButton.clicked.connect(self.populate_treeWidget)
         survey_select_dialog.exec_()
+
 
 def save_config():
     CONF.to_json(CONF.setting_abs_path)
