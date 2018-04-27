@@ -1,2 +1,1 @@
-# global variables
-DATA_ROOT = ''
+from config import CONFIG

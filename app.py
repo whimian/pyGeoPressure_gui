@@ -20,7 +20,7 @@ from pyface.qt.QtGui import QApplication
 # import pyGeoPressure Core code
 def main(argv):
     # pyGeoPressure core code path
-    core_path = ""
+    core_path = "D:\\HUB\\Python\\PorePressurePrediction"
     try:
         opts, args = getopt.getopt(argv, "hp:", ["path="])
     except getopt.GetoptError:

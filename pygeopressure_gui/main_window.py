@@ -37,11 +37,6 @@ from .widgets.seis_widget import MayaviQWidget
 from .widgets.well_log_widget import MatplotlibWidget
 from .basic.well_plotter import WellPlotter
 
-from . import DATA_ROOT
-
-__author__ = "Yu Hao"
-__copyright__ = "Copyright (C) 2018 Yu Hao"
-__license__ = "MIT"
 
 # class TreeWidgetItem(QTreeWidgetItem):
 #     def setData(self, column, role, value):
@@ -59,6 +54,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def __init__(self):
         super(MainWindow, self).__init__()
+        self.program_setting = None
         self.setupUi(self)
         self.initUI()
         # connect events
@@ -88,6 +84,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # self.mayavi_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.init_treeview()
         self.show()
+
+    # def _read_program_setting(self):
+    #     # self.program_setting = ProgramSetting(".settings")
+    #     # global DATA_ROOT
+    #     config.DATA_ROOT = self.program_setting.DATA_ROOT
 
     def handleItemChecked(self):
         # self.statusBar().showMessage("{}".format(self.DataTree.selectedItems()))
