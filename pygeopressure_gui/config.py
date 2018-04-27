@@ -4,4 +4,4 @@ from builtins import str
 
 class CONFIG ():
     data_root = "D:\\HUB\\Python\\UI_pyGeoPressure\\test\\data\\pygeo_root"
-    current_survey = "abc"
+    current_survey = "KQT"

@@ -18,12 +18,6 @@ from PyQt4 import uic
 from pyface.qt.QtCore import Qt, pyqtSignal
 import numpy as np
 from pathlib2 import Path
-# # add designer plugin path
-# USER_HOME = path.expanduser("~")
-# PLUGIN_PATH = path.join(USER_HOME, 'dropbox/pyqt_designer_plugins')
-
-# if PLUGIN_PATH not in sys.path:
-#     sys.path.append(PLUGIN_PATH)
 
 import pygeopressure as ppp
 

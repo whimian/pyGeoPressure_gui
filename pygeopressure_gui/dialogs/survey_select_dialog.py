@@ -24,16 +24,12 @@ class SurveySelectDialog(QDialog, Ui_surveySelectDialog):
         super(SurveySelectDialog, self).__init__()
         self.setupUi(self)
         self.initUI()
-
-        # connect events
+        # connect
         self.surveyListWidget.itemSelectionChanged.connect(
             self.display_map_and_info)
-        QtCore.QObject.connect(
-            self.surveyButton, QtCore.SIGNAL('clicked()'),
-            self.on_clicked_surveyButton)
+        self.surveyButton.clicked.connect(self.on_clicked_surveyButton)
 
         self.load_survey_list()
-
 
     def initUI(self):
         # uic.loadUi('pygeopressure_gui/ui/survey_select.ui', self)

@@ -25,8 +25,8 @@ class SurveyEditDialog(QDialog, Ui_surveyEditDialog):
         super(SurveyEditDialog, self).__init__()
         self.setupUi(self)
         self.initUI()
-        # connect events
-        self.settingComboBox.currentIndexChanged.connect(self.from_file_event)
+        # connect
+        self.settingComboBox.currentIndexChanged.connect(self.load_from_file)
 
     def initUI(self):
         # uic.loadUi('pygeopressure_gui/ui/survey_edit.ui', self)
@@ -38,7 +38,7 @@ class SurveyEditDialog(QDialog, Ui_surveyEditDialog):
         self.surveyNameLineEdit.selectAll()
         self.show()
 
-    def from_file_event(self, event):
+    def load_from_file(self):
         if self.settingComboBox.currentText() == 'From File':
             file_dlg = QFileDialog(self)
             file_dlg.setFileMode(QFileDialog.ExistingFile)
