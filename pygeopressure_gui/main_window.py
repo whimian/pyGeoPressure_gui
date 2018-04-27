@@ -6,6 +6,7 @@ Created on Fri Jan 05 2018
 """
 from __future__ import division, absolute_import, print_function
 from __future__ import with_statement, unicode_literals
+from builtins import str
 
 import sys
 import os
@@ -16,6 +17,9 @@ import json
 from pyface.qt.QtGui import (QIcon, QApplication, QMainWindow, QMessageBox,
     QGridLayout, QTreeWidgetItem)
 from PyQt4 import uic
+
+from pyface.qt import QtCore, QtGui
+
 from pyface.qt.QtCore import Qt, pyqtSignal
 import numpy as np
 from pathlib2 import Path
@@ -30,6 +34,7 @@ from .dialogs.survey_edit_dialog import SurveyEditDialog
 from .dialogs.survey_select_dialog import SurveySelectDialog
 from .widgets.seis_widget import MayaviQWidget
 from .widgets.well_log_widget import MatplotlibWidget
+from .widgets.map_view import MapView
 from .basic.well_plotter import WellPlotter
 
 from . import CONF
@@ -76,7 +81,32 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         layout2 = QGridLayout(self.tab_well)
         self.matplotlib_widget = MatplotlibWidget(self.tab_well)
         layout2.addWidget(self.matplotlib_widget)
+        try:
+            _fromUtf8 = QtCore.QString.fromUtf8
+        except AttributeError:
+            def _fromUtf8(s):
+                return s
+        try:
+            _encoding = QtGui.QApplication.UnicodeUTF8
+            def _translate(context, text, disambig):
+                return QtGui.QApplication.translate(context, text, disambig, _encoding)
+        except AttributeError:
+            def _translate(context, text, disambig):
+                return QtGui.QApplication.translate(context, text, disambig)
 
+        self.tab_new = QtGui.QWidget()
+        self.tab_new.setObjectName(_fromUtf8("tab_new"))
+        self.tabWidget.addTab(self.tab_new, _fromUtf8(""))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_new), _translate("MainWindow", "Map View", None))
+
+        layout3 = QGridLayout(self.tab_new)
+        self.map_view = MapView(self.tab_new)
+        layout3.addWidget(self.map_view)
+
+        file_path = Path(CONF.data_root) / CONF.current_survey / ".survey"
+        if file_path.exists():
+            print(file_path)
+        self.map_view.draw_map(ppp.SurveySetting(ppp.ThreePoints(str(file_path))))
         # self.mayavi_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.populate_treeWidget()
         self.show()
