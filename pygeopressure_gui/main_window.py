@@ -31,6 +31,7 @@ from .widgets.seis_widget import MayaviQWidget
 from .widgets.well_log_widget import MatplotlibWidget
 from .basic.well_plotter import WellPlotter
 
+from . import CONF
 
 # class TreeWidgetItem(QTreeWidgetItem):
 #     def setData(self, column, role, value):
@@ -178,6 +179,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             QMessageBox.No, QMessageBox.No)
 
         if reply == QMessageBox.Yes:
+            save_config()
             event.accept()
         else:
             event.ignore()
@@ -197,3 +199,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def surveySelectEvent(self, event):
         survey_select_dialog = SurveySelectDialog()
         survey_select_dialog.exec_()
+
+def save_config():
+    CONF.to_json(CONF.setting_abs_path)
+
+def start():
+    # app = QApplication(sys.argv)
+    # Don't create a new QApplication, it would unhook the Events
+    # set by Traits on the existing QApplication. Simply use the
+    # '.instance()' method to retrieve the existing one.
+    app = QApplication.instance()
+    window = MainWindow()
+    sys.exit(app.exec_())

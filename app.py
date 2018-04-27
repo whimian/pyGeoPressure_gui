@@ -5,21 +5,21 @@ run script for pygeopressure gui program
 Created on Sun Jan 21 2018
 """
 from __future__ import print_function
+from __future__ import unicode_literals
+from builtins import str, open
 
-import sys, getopt
+import sys
+import getopt
+import json
 
-from pyface.qt.QtGui import QApplication
+from pygeopressure_gui import Path
 
-# CORE_PATH = "D:\\HUB\\Python\\PorePressurePrediction"
-
-# if CORE_PATH not in sys.path:
-#     sys.path.append(CORE_PATH)
-
-# from pygeopressure_gui.main_window import MainWindow
+from pygeopressure_gui.config import CONF
 
 # import pyGeoPressure Core code
-def main(argv):
-    # pyGeoPressure core code path
+def parse_args(argv):
+    #-------------------------------------
+    # set pyGeoPressure core code path
     core_path = "D:\\HUB\\Python\\PorePressurePrediction"
     try:
         opts, args = getopt.getopt(argv, "hp:", ["path="])
@@ -37,13 +37,24 @@ def main(argv):
         sys.path.append(core_path)
 
 
+def load_setting():
+    current_file_path = Path(__file__)
+    setting_file_path = Path(Path(current_file_path.parents[0]), "setting")
+    # config.CONF.from_json(setting_file_path)
+    CONF.from_json(setting_file_path)
+    CONF.setting_abs_path = str(setting_file_path)
+
+def main():
+    parse_args(sys.argv[1:])
+    load_setting()
+    # start application
+    from pygeopressure_gui.main_window import start
+    start()
+
 if __name__ == '__main__':
-    # app = QApplication(sys.argv)
-    # Don't create a new QApplication, it would unhook the Events
-    # set by Traits on the existing QApplication. Simply use the
-    # '.instance()' method to retrieve the existing one.
-    main(sys.argv[1:])
-    from pygeopressure_gui.main_window import MainWindow
-    app = QApplication.instance()
-    window = MainWindow()
-    sys.exit(app.exec_())
+    main()
+
+
+
+
+

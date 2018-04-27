@@ -16,7 +16,7 @@ from ..basic.survey_setting import SurveySetting
 from ..widgets.survey_map_widget import SurveyMap
 from ..ui.ui_survey_select import Ui_surveySelectDialog
 
-from pygeopressure_gui import CONFIG
+from pygeopressure_gui import CONF
 
 
 class SurveySelectDialog(QDialog, Ui_surveySelectDialog):
@@ -39,30 +39,30 @@ class SurveySelectDialog(QDialog, Ui_surveySelectDialog):
         self.show()
 
     def load_survey_list(self):
-        if CONFIG.data_root is not None:
-            self.dataRootLabel.setText(CONFIG.data_root)
+        if CONF.data_root is not None:
+            self.dataRootLabel.setText(CONF.data_root)
             # populate surveylist
-            dnames = get_available_survey_dir(Path(CONFIG.data_root))
+            dnames = get_available_survey_dir(Path(CONF.data_root))
             self.surveyListWidget.clear()
             self.surveyListWidget.addItems(dnames)
 
-            if CONFIG.current_survey is not None:
+            if CONF.current_survey is not None:
                 finded = self.surveyListWidget.findItems(
-                    CONFIG.current_survey, QtCore.Qt.MatchExactly)
+                    CONF.current_survey, QtCore.Qt.MatchExactly)
                 if len(finded) != 0:
                     self.surveyListWidget.setItemSelected(finded[0], True)
 
     def on_clicked_surveyButton(self):
-        # set new CONFIG.data_root
-        CONFIG.data_root = str(QFileDialog.getExistingDirectory(
+        # set new CONF.data_root
+        CONF.data_root = str(QFileDialog.getExistingDirectory(
             self, "Select Directory"))
-        # display CONFIG.data_root
+        # display CONF.data_root
         self.load_survey_list()
 
     def display_map_and_info(self):
         # get survey file path
         survey_folder = str(self.surveyListWidget.selectedItems()[0].text())
-        survey_file = Path(CONFIG.data_root, survey_folder, '.survey')
+        survey_file = Path(CONF.data_root, survey_folder, '.survey')
         # create new survey
         new_survey = SurveySetting(survey_file)
         # build survey info string for display
@@ -87,7 +87,7 @@ class SurveySelectDialog(QDialog, Ui_surveySelectDialog):
                 new_survey.area) + \
             "In-line Orientation: {:.2f} Degrees from N\n".format(
                 new_survey.azimuth) + \
-            "Location: {}".format(str(Path(CONFIG.data_root, survey_folder)))
+            "Location: {}".format(str(Path(CONF.data_root, survey_folder)))
         self.surveyInfoTextEdit.setPlainText(info_string)
         # draw survey area plot
         inlines = [new_survey.startInline, new_survey.startInline,
