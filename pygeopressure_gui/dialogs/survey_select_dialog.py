@@ -28,6 +28,7 @@ class SurveySelectDialog(QDialog, Ui_surveySelectDialog):
         self.surveyListWidget.itemSelectionChanged.connect(
             self.display_map_and_info)
         self.surveyButton.clicked.connect(self.on_clicked_surveyButton)
+        self.selectButton.clicked.connect(self.on_clicked_selectButton)
 
         self.load_survey_list()
 
@@ -58,6 +59,11 @@ class SurveySelectDialog(QDialog, Ui_surveySelectDialog):
             self, "Select Directory"))
         # display CONF.data_root
         self.load_survey_list()
+
+    def on_clicked_selectButton(self):
+        CONF.current_survey = str(
+            self.surveyListWidget.selectedItems()[0].text())
+        self.done(1)
 
     def display_map_and_info(self):
         # get survey file path
