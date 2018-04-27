@@ -11,6 +11,7 @@ import sys
 import os
 from os import path
 import time
+import json
 
 from pyface.qt.QtGui import (QIcon, QApplication, QMainWindow, QMessageBox,
     QGridLayout, QTreeWidgetItem)
@@ -160,18 +161,42 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         well_plot_control.plot_well_log()
 
     def init_treeview(self):
-        self.DataTree.setHeaderLabel('Data')
+        survey_file = Path(CONF.data_root, CONF.current_survey, '.survey')
+        if survey_file.exists():
+            self.DataTree.setHeaderLabel(CONF.current_survey)
+            # populate seismic data
+            seis_data = QTreeWidgetItem(self.DataTree)
+            seis_data.setText(0, 'Seismic')
+            # seis_data.setFlags(seis_data.flags() | Qt.ItemIsTristate | Qt.ItemIsUserCheckable)
+            with open(str(Path(CONF.data_root, CONF.current_survey, "Seismics/.seismics"))) as fl:
+                seis_dict = json.load(fl)
+                for item in seis_dict.keys():
+                    f3 = QTreeWidgetItem(seis_data)
+                    f3.setFlags(f3.flags() | Qt.ItemIsUserCheckable)
+                    f3.setText(0, item)
+                    f3.setCheckState(0, Qt.Unchecked)
+            # populate well data
+            well_data = QTreeWidgetItem(self.DataTree)
+            well_data.setText(0, 'Wells')
+            with open(str(Path(CONF.data_root, CONF.current_survey, "Wellinfo/.wellinfo"))) as fl:
+                well_dict = json.load(fl)
+                for item in well_dict.keys():
+                    f3 = QTreeWidgetItem(well_data)
+                    f3.setFlags(f3.flags() | Qt.ItemIsUserCheckable)
+                    f3.setText(0, item)
+                    f3.setCheckState(0, Qt.Unchecked)
+            # populate surface data
+            surface_data = QTreeWidgetItem(self.DataTree)
+            surface_data.setText(0, 'Surfaces')
+            with open(str(Path(CONF.data_root, CONF.current_survey, "Surfaces/.surfaces"))) as fl:
+                surface_dict = json.load(fl)
+                for item in surface_dict.keys():
+                    f3 = QTreeWidgetItem(surface_data)
+                    f3.setFlags(f3.flags() | Qt.ItemIsUserCheckable)
+                    f3.setText(0, item)
+                    f3.setCheckState(0, Qt.Unchecked)
 
-        seis_data = QTreeWidgetItem(self.DataTree)
-        seis_data.setText(0, 'Seismic')
-        # seis_data.setFlags(seis_data.flags() | Qt.ItemIsTristate | Qt.ItemIsUserCheckable)
-
-        self.f3 = QTreeWidgetItem(seis_data)
-        self.f3.setFlags(self.f3.flags() | Qt.ItemIsUserCheckable)
-        self.f3.setText(0, "f3")
-        self.f3.setCheckState(0, Qt.Unchecked)
-
-        self.DataTree.show()
+            self.DataTree.show()
 
     def closeEvent(self, event):
         reply = QMessageBox.question(self, 'Message',
