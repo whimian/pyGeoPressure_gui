@@ -47,6 +47,12 @@ def read_survey_setting(json_file, parent_window):
             print(e.message)
 
 
+class DuplicateSurveyNameExeption(Exception):
+    def __init__(self):
+        self.message = ""
+        super(DuplicateSurveyNameExeption, self).__init__(self.message)
+
+
 def create_survey_directory(root_dir, survey_name):
     """
     Create survey folder structure
@@ -65,10 +71,11 @@ def create_survey_directory(root_dir, survey_name):
                          root_dir / survey_name / 'Surfaces']
         for directory in dir_to_create:
             directory.mkdir()
+            file_path = directory / ".{}".format(str(directory.name).lower())
+            file_path.touch()
         return survey_root
-    except FileExistsError as ex:
-        print("Survey name: \"{}\" already existed. ".format(survey_name) + \
-            "Please consider choosing another one.")
+    except WindowsError:
+        raise DuplicateSurveyNameExeption()
 
 def create_survey_info_file(survey_root, parent_window):
     """"""
