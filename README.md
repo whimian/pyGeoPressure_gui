@@ -1,5 +1,7 @@
 # GUI for pyGeoPressure
 
+[![Waffle.io - Columns and their card count](https://badge.waffle.io/whimian/pyGeoPressure_gui.svg?columns=all)](https://waffle.io/whimian/pyGeoPressure_gui)
+
 GUI built on PyQt4 for pyGeoPressure
 
 # Usage
