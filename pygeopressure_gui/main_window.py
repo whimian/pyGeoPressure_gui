@@ -113,7 +113,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         layout3.addWidget(self.map_view)
 
         file_path = Path(CONF.data_root) / CONF.current_survey / ".survey"
-        self.map_view.draw_map(ppp.SurveySetting(ppp.ThreePoints(str(file_path))))
+        if file_path.exists():
+            self.map_view.draw_map(ppp.SurveySetting(ppp.ThreePoints(str(file_path))))
         # self.mayavi_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.populate_treeWidget()
         self.show()
@@ -281,7 +282,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 # Utilities
 # =============================================================================
 def save_config():
-    CONF.to_json(CONF.setting_abs_path)
+    if Path(CONF.data_root + CONF.current_survey).exists():
+        CONF.to_json(CONF.setting_abs_path)
 
 def start():
     # app = QApplication(sys.argv)

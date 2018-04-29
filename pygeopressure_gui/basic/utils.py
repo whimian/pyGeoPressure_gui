@@ -6,12 +6,19 @@ Created on Thu Jan 11 2018
 """
 from __future__ import (division, absolute_import, print_function,
                         with_statement, unicode_literals)
+from future.builtins import int
 
 __author__ = "Yu Hao"
 
 import json
 
 
+class DuplicateSurveyNameExeption(Exception):
+    def __init__(self):
+        self.message = ""
+        super(DuplicateSurveyNameExeption, self).__init__(self.message)
+
+# =============================================================================
 def read_survey_setting(json_file, parent_window):
     "read survey settings into import window widgets"
     with open(json_file, 'r') as file:
@@ -45,12 +52,47 @@ def read_survey_setting(json_file, parent_window):
         except KeyError as e:
             print(e.message)
 
-
-class DuplicateSurveyNameExeption(Exception):
-    def __init__(self):
-        self.message = ""
-        super(DuplicateSurveyNameExeption, self).__init__(self.message)
-
+def discern_setting_from_gui(parent_window):
+    "read survey settings from window widgets as a dict"
+    dict_survey = dict()
+    dict_survey['name'] = parent_window.surveyNameLineEdit.text()
+    dict_survey["point_A"] = [
+        int(parent_window.a_inline_text.text()),
+        int(parent_window.a_crline_text.text()),
+        float(parent_window.a_x_text.text()),
+        float(parent_window.a_y_text.text())]
+    dict_survey["point_B"] = [
+        int(parent_window.b_inline_text.text()),
+        int(parent_window.b_crline_text.text()),
+        float(parent_window.b_x_text.text()),
+        float(parent_window.b_y_text.text())]
+    dict_survey["point_C"] = [
+        int(parent_window.c_inline_text.text()),
+        int(parent_window.c_crline_text.text()),
+        float(parent_window.c_x_text.text()),
+        float(parent_window.c_y_text.text())]
+    dict_survey["inline_range"] = [
+        parent_window.inline_0_spinBox.value(),
+        parent_window.inline_1_spinBox.value(),
+        parent_window.inline_step_spinBox.value()
+    ],
+    dict_survey["crline_range"] = [
+        parent_window.crline_0_spinBox.value(),
+        parent_window.crline_1_spinBox.value(),
+        parent_window.crline_step_spinBox.value()
+    ],
+    dict_survey["z_range"] = [
+        parent_window.z_0_spinBox.value(),
+        parent_window.z_1_spinBox.value(),
+        parent_window.z_step_spinBox.value(),
+        parent_window.unitComboBox.currentText()
+    ]
+    # it's a bug of pyqt4
+    if isinstance(dict_survey['inline_range'], tuple):
+        dict_survey['inline_range'] = dict_survey['inline_range'][0]
+        dict_survey['crline_range'] = dict_survey['crline_range'][0]
+        # dict_survey['z_range'] = dict_survey['z_range'][0]
+    return dict_survey
 
 def create_survey_directory(root_dir, survey_name):
     """
@@ -75,6 +117,11 @@ def create_survey_directory(root_dir, survey_name):
         return survey_root
     except WindowsError:
         raise DuplicateSurveyNameExeption()
+
+def write_survey_file(path_file, survey_dict):
+    file_to_write = path_file
+    with open(str(file_to_write), "w") as fl:
+            json.dump(survey_dict, fl, indent=4)
 
 def create_survey_info_file(survey_root, parent_window):
     """"""
@@ -105,8 +152,9 @@ def create_survey_info_file(survey_root, parent_window):
     }
     survey_file = survey_root.joinpath('.survey')
     with survey_file.open('w') as wf:
-        json.dump(survey_dict, wf)
+        json.dump(survey_dict, wf, indent=4)
 
+# =============================================================================
 def get_available_survey_dir(data_root):
     """
     data_root : Path

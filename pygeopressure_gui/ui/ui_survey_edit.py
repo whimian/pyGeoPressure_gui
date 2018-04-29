@@ -288,9 +288,9 @@ class Ui_surveyEditDialog(object):
         self.checkBox.setGeometry(QtCore.QRect(440, 110, 171, 21))
         self.checkBox.setObjectName(_fromUtf8("checkBox"))
         self.tabWidget.addTab(self.tab_2, _fromUtf8(""))
-        self.pushButton_2 = QtGui.QPushButton(self.groupBox)
-        self.pushButton_2.setGeometry(QtCore.QRect(540, 210, 100, 23))
-        self.pushButton_2.setObjectName(_fromUtf8("pushButton_2"))
+        self.applyButton = QtGui.QPushButton(self.groupBox)
+        self.applyButton.setGeometry(QtCore.QRect(540, 210, 100, 23))
+        self.applyButton.setObjectName(_fromUtf8("applyButton"))
 
         self.retranslateUi(surveyEditDialog)
         self.tabWidget.setCurrentIndex(0)
@@ -329,5 +329,5 @@ class Ui_surveyEditDialog(object):
         self.label_12.setText(_translate("surveyEditDialog", " + cross-line * ", None))
         self.checkBox.setText(_translate("surveyEditDialog", "Overrule easy settings", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("surveyEditDialog", "Advanced", None))
-        self.pushButton_2.setText(_translate("surveyEditDialog", "Apply", None))
+        self.applyButton.setText(_translate("surveyEditDialog", "Apply", None))
 
