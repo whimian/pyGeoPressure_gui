@@ -9,7 +9,7 @@ Created on Fri Jan 05 2018
 # =============================================================================
 from __future__ import (division, absolute_import, print_function,
                         with_statement, unicode_literals)
-from future.builtins import *
+from future.builtins import super
 
 __author__ = "Yu Hao"
 
@@ -53,7 +53,7 @@ import pygeopressure_gui.qrc_resources
 from pygeopressure_gui.ui.ui_pygeopressure import Ui_MainWindow
 from pygeopressure_gui.dialogs.survey_edit_dialog import SurveyEditDialog
 from pygeopressure_gui.dialogs.survey_select_dialog import SurveySelectDialog
-from pygeopressure_gui.widgets.seis_widget import MayaviQWidget
+from pygeopressure_gui.widgets.mayavi_widget import MayaviQWidget
 from pygeopressure_gui.widgets.matplotlib_widget import MatplotlibWidget
 from pygeopressure_gui.views.map_view import MapView
 from pygeopressure_gui.basic.well_plotter import WellPlotter
@@ -86,12 +86,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.actionAbout.triggered.connect(self.aboutEvent)
         self.actionNewSurvey.triggered.connect(self.surveyEditEvent)
         self.actionSelectSurvey.triggered.connect(self.surveySelectEvent)
+        self.actionMapView.triggered.connect(self.create_Map_View)
         self.DataTree.itemClicked.connect(self.handleItemChecked)
 
         # self.statusBar().showMessage("System Status | Normal")
         self.source = None
 
-        self.plot_well()
+
 
     def initUI(self):
         # uic.loadUi('pygeopressure_gui/ui/pygeopressure.ui', self)
@@ -102,19 +103,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.mayavi_widget = MayaviQWidget(self.tab_seis)
         layout.addWidget(self.mayavi_widget)
 
-        layout2 = QGridLayout(self.tab_well)
-        self.matplotlib_widget = MatplotlibWidget(self.tab_well)
-        layout2.addWidget(self.matplotlib_widget)
+        # layout2 = QGridLayout(self.tab_well)
+        # self.matplotlib_widget = MatplotlibWidget(self.tab_well)
+        # layout2.addWidget(self.matplotlib_widget)
+        # self.plot_well()
 
-        self.tab_new = self.create_new_tab("tab_new")
-
-        layout3 = QGridLayout(self.tab_new)
-        self.map_view = MapView(self.tab_new)
-        layout3.addWidget(self.map_view)
-
-        file_path = Path(CONF.data_root) / CONF.current_survey / ".survey"
-        if file_path.exists():
-            self.map_view.draw_map(ppp.SurveySetting(ppp.ThreePoints(str(file_path))))
         # self.mayavi_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.populate_treeWidget()
         self.show()
@@ -129,7 +122,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 child = item.child(i)
                 if child.checkState(0) == Qt.Checked:
                     self.statusBar().showMessage('Displaying Data')
-                    self.plot_seis()
+                    self.plot_seis() # Plot seismic data
                 elif child.checkState(0) == Qt.Unchecked:
                     self.statusBar().showMessage('Unchecked')
                     if self.source is None:
@@ -251,6 +244,26 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.tabWidget.setTabText(self.tabWidget.indexOf(new_tab),
                                   _translate("MainWindow", "Map View", None))
         return new_tab
+
+    def create_Well_View(self):
+        pass
+
+    def create_Map_View(self):
+        "Create a New Tab containing the MapView in the main TabWidget"
+        self.tab_new = self.create_new_tab("tab_new")
+        # add adtional info
+        self.tab_new.view_type = "MapView"
+        layout = QGridLayout(self.tab_new)
+        self.map_view = MapView(self.tab_new)
+        layout.addWidget(self.map_view)
+
+        file_path = Path(CONF.data_root) / CONF.current_survey / ".survey"
+        if file_path.exists():
+            self.map_view.draw_map(ppp.SurveySetting(ppp.ThreePoints(str(file_path))))
+        self.tabWidget.setCurrentWidget(self.tab_new)
+        # return the current tab
+        # self.tabWidget.currentWidget()
+
     # -------------------------------------------------------------------------
     # Override default events
     # def resizeEvent(self, event):

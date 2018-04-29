@@ -62,11 +62,6 @@
        <property name="currentIndex">
         <number>0</number>
        </property>
-       <widget class="QWidget" name="tab_well">
-        <attribute name="title">
-         <string>Well 2D</string>
-        </attribute>
-       </widget>
        <widget class="QWidget" name="tab_seis">
         <attribute name="title">
          <string>Seismic 3D</string>
@@ -97,8 +92,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>260</width>
-          <height>488</height>
+          <width>263</width>
+          <height>452</height>
          </rect>
         </property>
         <property name="accessibleName">
@@ -171,8 +166,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>260</width>
-          <height>488</height>
+          <width>263</width>
+          <height>452</height>
          </rect>
         </property>
         <attribute name="label">
@@ -269,8 +264,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>260</width>
-          <height>488</height>
+          <width>263</width>
+          <height>452</height>
          </rect>
         </property>
         <attribute name="label">
@@ -288,7 +283,7 @@
      <x>0</x>
      <y>0</y>
      <width>1068</width>
-     <height>21</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuData">
@@ -316,11 +311,11 @@
     <property name="title">
      <string>Scene</string>
     </property>
-    <addaction name="action2D_Time"/>
+    <addaction name="action3D_Time"/>
     <addaction name="action3D_Depth"/>
     <addaction name="separator"/>
-    <addaction name="action2D_Depth"/>
-    <addaction name="action3D_Depth_2"/>
+    <addaction name="actionMapView"/>
+    <addaction name="actionSectionView"/>
    </widget>
    <widget class="QMenu" name="menuSurvey">
     <property name="title">
@@ -376,7 +371,7 @@
     <string>2D - Time</string>
    </property>
   </action>
-  <action name="action3D_Depth">
+  <action name="action3D_Time">
    <property name="text">
     <string>3D - Time</string>
    </property>
@@ -386,7 +381,7 @@
     <string>2D - Depth</string>
    </property>
   </action>
-  <action name="action3D_Depth_2">
+  <action name="action3D_Depth">
    <property name="text">
     <string>3D - Depth</string>
    </property>
@@ -424,6 +419,16 @@
   <action name="actionSelectSurvey">
    <property name="text">
     <string>Select/Setup</string>
+   </property>
+  </action>
+  <action name="actionMapView">
+   <property name="text">
+    <string>Map view</string>
+   </property>
+  </action>
+  <action name="actionSectionView">
+   <property name="text">
+    <string>Section</string>
    </property>
   </action>
  </widget>
