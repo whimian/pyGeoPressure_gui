@@ -7,12 +7,6 @@ Created on Sun Jan 21 2018
 from __future__ import division, absolute_import, print_function
 from __future__ import with_statement, unicode_literals
 
-# ppath = "D:\\HUB\\Python\\PorePressurePrediction"
-
-# if ppath not in sys.path:
-#     sys.path.append(ppath)
-# import pygeopressure as ppp
-
 
 class WellPlotter(object):
     def __init__(self, fig, well_log):

@@ -4,40 +4,59 @@ A GUI application for geopressure prediction
 
 Created on Fri Jan 05 2018
 """
+# =============================================================================
+# Stdlib imports
+# =============================================================================
 from __future__ import division, absolute_import, print_function
 from __future__ import with_statement, unicode_literals
-from builtins import str
+from future.builtins import *
 
 import sys
-import os
-from os import path
 import time
 import json
-
+#==============================================================================
+# Qt imports
+#==============================================================================
+# Since we are using Mayavi, pyface has to be used
 from pyface.qt.QtGui import (QIcon, QApplication, QMainWindow, QMessageBox,
-    QGridLayout, QTreeWidgetItem)
-from PyQt4 import uic
-
+                             QGridLayout, QTreeWidgetItem, QWidget)
 from pyface.qt import QtCore, QtGui
-
 from pyface.qt.QtCore import Qt, pyqtSignal
+# except uic which works fine
+from PyQt4 import uic
+# -----------------------------------------------------------------------------
+try:
+    _fromUtf8 = QtCore.QString.fromUtf8
+except AttributeError:
+    def _fromUtf8(s):
+        return s
+try:
+    _encoding = QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QApplication.translate(context, text, disambig)
+# =============================================================================
+# Third Party imports
+# =============================================================================
 import numpy as np
 from pathlib2 import Path
-
+# =============================================================================
+# Local imports
+# =============================================================================
 import pygeopressure as ppp
 
 import pygeopressure_gui.qrc_resources
+from pygeopressure_gui.ui.ui_pygeopressure import Ui_MainWindow
+from pygeopressure_gui.dialogs.survey_edit_dialog import SurveyEditDialog
+from pygeopressure_gui.dialogs.survey_select_dialog import SurveySelectDialog
+from pygeopressure_gui.widgets.seis_widget import MayaviQWidget
+from pygeopressure_gui.widgets.matplotlib_widget import MatplotlibWidget
+from pygeopressure_gui.widgets.map_view import MapView
+from pygeopressure_gui.basic.well_plotter import WellPlotter
 
-from .ui.ui_pygeopressure import Ui_MainWindow
-
-from .dialogs.survey_edit_dialog import SurveyEditDialog
-from .dialogs.survey_select_dialog import SurveySelectDialog
-from .widgets.seis_widget import MayaviQWidget
-from .widgets.well_log_widget import MatplotlibWidget
-from .widgets.map_view import MapView
-from .basic.well_plotter import WellPlotter
-
-from . import CONF
+from pygeopressure_gui import CONF
 
 # class TreeWidgetItem(QTreeWidgetItem):
 #     def setData(self, column, role, value):
@@ -48,13 +67,16 @@ from . import CONF
 #             treewidget = self.treeWidget()
 #             if treewidget is not None:
 #                 treewidget.itemChecked.emit(self, column)
-
+#==============================================================================
+# Main Window
+#==============================================================================
 class MainWindow(QMainWindow, Ui_MainWindow):
 
     # itemChecked = pyqtSignal(object, int)
 
     def __init__(self):
-        super(MainWindow, self).__init__()
+        # super(MainWindow, self).__init__()
+        super().__init__()
         self.program_setting = None
         self.setupUi(self)
         self.initUI()
@@ -81,40 +103,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         layout2 = QGridLayout(self.tab_well)
         self.matplotlib_widget = MatplotlibWidget(self.tab_well)
         layout2.addWidget(self.matplotlib_widget)
-        try:
-            _fromUtf8 = QtCore.QString.fromUtf8
-        except AttributeError:
-            def _fromUtf8(s):
-                return s
-        try:
-            _encoding = QtGui.QApplication.UnicodeUTF8
-            def _translate(context, text, disambig):
-                return QtGui.QApplication.translate(context, text, disambig, _encoding)
-        except AttributeError:
-            def _translate(context, text, disambig):
-                return QtGui.QApplication.translate(context, text, disambig)
 
-        self.tab_new = QtGui.QWidget()
-        self.tab_new.setObjectName(_fromUtf8("tab_new"))
-        self.tabWidget.addTab(self.tab_new, _fromUtf8(""))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_new), _translate("MainWindow", "Map View", None))
+        self.tab_new = self.create_new_tab("tab_new")
 
         layout3 = QGridLayout(self.tab_new)
         self.map_view = MapView(self.tab_new)
         layout3.addWidget(self.map_view)
 
         file_path = Path(CONF.data_root) / CONF.current_survey / ".survey"
-        if file_path.exists():
-            print(file_path)
         self.map_view.draw_map(ppp.SurveySetting(ppp.ThreePoints(str(file_path))))
         # self.mayavi_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.populate_treeWidget()
         self.show()
-
-    # def _read_program_setting(self):
-    #     # self.program_setting = ProgramSetting(".settings")
-    #     # global DATA_ROOT
-    #     config.DATA_ROOT = self.program_setting.DATA_ROOT
 
     def handleItemChecked(self):
         # self.statusBar().showMessage("{}".format(self.DataTree.selectedItems()))
@@ -229,6 +229,32 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
             self.DataTree.show()
 
+    def surveyEditEvent(self, event):
+        survey_edit_window = SurveyEditDialog()
+        survey_edit_window.exec_()
+
+    def surveySelectEvent(self, event):
+        survey_select_dialog = SurveySelectDialog()
+        survey_select_dialog.selectButton.clicked.connect(self.populate_treeWidget)
+        survey_select_dialog.exec_()
+
+    def create_new_tab(self, tab_name):
+        """
+        add new tab to the central tab widget
+        """
+        new_tab = QWidget()
+        new_tab.setObjectName(_fromUtf8(tab_name))
+        self.tabWidget.addTab(new_tab, _fromUtf8(""))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(new_tab),
+                                  _translate("MainWindow", "Map View", None))
+        return new_tab
+    # -------------------------------------------------------------------------
+    # Override default events
+    # def resizeEvent(self, event):
+    #     # file_path = Path(CONF.data_root) / CONF.current_survey / ".survey"
+    #     # self.map_view.draw_map(ppp.SurveySetting(ppp.ThreePoints(str(file_path))))
+    #     self.map_view.redraw()
+
     def closeEvent(self, event):
         reply = QMessageBox.question(self, 'Message',
             "Are you sure to quit?", QMessageBox.Yes |
@@ -248,16 +274,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             "Author: yuhao\n" + \
             "E-mail: yuhao89@live.cn")
 
-    def surveyEditEvent(self, event):
-        survey_edit_window = SurveyEditDialog()
-        survey_edit_window.exec_()
 
-    def surveySelectEvent(self, event):
-        survey_select_dialog = SurveySelectDialog()
-        survey_select_dialog.selectButton.clicked.connect(self.populate_treeWidget)
-        survey_select_dialog.exec_()
-
-
+# =============================================================================
+# Utilities
+# =============================================================================
 def save_config():
     CONF.to_json(CONF.setting_abs_path)
 

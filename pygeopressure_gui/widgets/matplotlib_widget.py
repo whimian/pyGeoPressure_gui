@@ -25,11 +25,10 @@ class MatplotlibWidget(QWidget):
     def __init__(self, parent=None):
         QWidget.__init__(self, parent=None)
 
-        self.fig = Figure((5.0, 4.0), dpi=100)
-        self.axes = self.fig.add_subplot(111)
+        self.canvas = MyCanvas()
+        self.fig = self.canvas.fig
+        self.axes = self.canvas.axes
 
-        self.canvas = FigureCanvas(self.fig)
-        self.canvas.setParent(self)
         self.canvas.setFocusPolicy(Qt.StrongFocus)
         self.canvas.setFocus()
 
@@ -42,28 +41,33 @@ class MatplotlibWidget(QWidget):
         vbox.addWidget(self.canvas)
         self.setLayout(vbox)
 
-        # timer = QTimer(self)
-        # timer.timeout.connect(self.update_figure)
-        # timer.start(1000)
-
-    # def compute_initial_figure(self):
-    #     self.axes.plot([0, 1, 2, 3], [1, 2, 0, 4], 'r')
-
-    # def update_figure(self):
-    #     # Build a list of 4 random integers between 0 and 10 (both inclusive)
-    #     l = [random.randint(0, 10) for i in range(4)]
-    #     self.axes.cla()
-    #     self.axes.plot([0, 1, 2, 3], l, 'r')
-    #     self.canvas.draw()
-
     def on_key_press(self, event):
         print('you pressed', event.key)
         # implement the default mpl key press events described at
         # http://matplotlib.org/users/navigation_toolbar.html#navigation-keyboard-shortcuts
         key_press_handler(event, self.canvas, self.mpl_toolbar)
 
-    # def sizeHint(self):
-    #     return QSize(*self.canvas.get_width_height())
+    def sizeHint(self):
+        return QSize(*self.canvas.get_width_height())
 
     def minimumSizeHint(self):
         return QSize(10, 10)
+
+
+class MyCanvas(FigureCanvas):
+    def __init__(self, parent=None):
+        QWidget.__init__(self, parent=None)
+
+        self.fig = Figure(dpi=100)
+        self.axes = self.fig.add_subplot(111)
+
+        FigureCanvas.__init__(self, self.fig)
+        self.setParent(parent)
+
+        FigureCanvas.setSizePolicy(self,
+                                   QSizePolicy.Expanding,
+                                   QSizePolicy.Expanding)
+        FigureCanvas.updateGeometry(self)
+
+        self.setFocusPolicy(Qt.StrongFocus)
+        self.setFocus()
