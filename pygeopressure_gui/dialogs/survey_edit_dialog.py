@@ -4,8 +4,8 @@ Survey info edit dialog
 
 Created on Fri Jan 05 2018
 """
-from __future__ import division, absolute_import, print_function
-from __future__ import with_statement, unicode_literals
+from __future__ import (division, absolute_import, print_function,
+                        with_statement, unicode_literals)
 
 __author__ = "Yu Hao"
 

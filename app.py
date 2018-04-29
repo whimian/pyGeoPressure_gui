@@ -4,8 +4,8 @@ run script for pygeopressure gui program
 
 Created on Sun Jan 21 2018
 """
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import (division, absolute_import, print_function,
+                        with_statement, unicode_literals)
 from builtins import str, open
 
 import sys

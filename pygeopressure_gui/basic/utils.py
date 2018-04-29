@@ -4,8 +4,8 @@ Utility functions
 
 Created on Thu Jan 11 2018
 """
-from __future__ import print_function, absolute_import, division
-from __future__ import unicode_literals
+from __future__ import (division, absolute_import, print_function,
+                        with_statement, unicode_literals)
 
 __author__ = "Yu Hao"
 

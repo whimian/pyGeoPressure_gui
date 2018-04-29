@@ -4,8 +4,8 @@ A survey setting class
 
 Created on Sat Jan 20 2018
 """
-from __future__ import absolute_import, print_function, division
-from __future__ import unicode_literals, with_statement
+from __future__ import (division, absolute_import, print_function,
+                        with_statement, unicode_literals)
 
 __author__ = "Yu Hao"
 

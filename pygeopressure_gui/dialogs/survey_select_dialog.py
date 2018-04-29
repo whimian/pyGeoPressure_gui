@@ -4,8 +4,10 @@ A survey setting class
 
 Created on Sat Jan 20 2018
 """
-from __future__ import division, absolute_import, print_function
-from __future__ import with_statement, unicode_literals
+from __future__ import (division, absolute_import, print_function,
+                        with_statement, unicode_literals)
+
+__author__ = "Yu Hao"
 
 from pathlib2 import Path
 from PyQt4.QtGui import QIcon, QDialog, QFileDialog
