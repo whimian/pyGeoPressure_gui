@@ -55,7 +55,7 @@ from pygeopressure_gui.dialogs.survey_edit_dialog import SurveyEditDialog
 from pygeopressure_gui.dialogs.survey_select_dialog import SurveySelectDialog
 from pygeopressure_gui.widgets.seis_widget import MayaviQWidget
 from pygeopressure_gui.widgets.matplotlib_widget import MatplotlibWidget
-from pygeopressure_gui.widgets.map_view import MapView
+from pygeopressure_gui.views.map_view import MapView
 from pygeopressure_gui.basic.well_plotter import WellPlotter
 
 from pygeopressure_gui import CONF
