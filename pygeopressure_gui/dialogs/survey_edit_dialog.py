@@ -7,6 +7,8 @@ Created on Fri Jan 05 2018
 from __future__ import division, absolute_import, print_function
 from __future__ import with_statement, unicode_literals
 
+__author__ = "Yu Hao"
+
 import sys
 from os import path
 
@@ -17,8 +19,6 @@ from PyQt4 import uic
 from ..basic.utils import read_survey_setting
 from ..ui.ui_survey_edit import Ui_surveyEditDialog
 
-__author__ = "Yu Hao"
-__copyright__ = "Copyright (C) 2018 Yu Hao"
 
 class SurveyEditDialog(QDialog, Ui_surveyEditDialog):
     def __init__(self):

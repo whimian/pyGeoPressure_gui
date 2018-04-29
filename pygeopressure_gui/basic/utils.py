@@ -7,10 +7,9 @@ Created on Thu Jan 11 2018
 from __future__ import print_function, absolute_import, division
 from __future__ import unicode_literals
 
-import json
+__author__ = "Yu Hao"
 
-__author__ = "yuhao"
-__copyright__ = "Copyright (C) 2018 Yu Hao"
+import json
 
 
 def read_survey_setting(json_file, parent_window):

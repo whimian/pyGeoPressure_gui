@@ -4,14 +4,12 @@ A survey map widget
 
 Created on Sat Jan 20 2018
 """
-from __future__ import division, absolute_import, print_function
-from __future__ import with_statement, unicode_literals
+from __future__ import division, absolute_import, unicode_literals
+
+__author__ = "Yu Hao"
 
 from pyface.qt.QtGui import QWidget, QPainter, QPen
 from pyface.qt.QtCore import QPoint, Qt
-
-__author__ = "Yu Hao"
-__copyright__ = "Copyright (C) 2018 Yu Hao"
 
 
 class SurveyMap(QWidget):

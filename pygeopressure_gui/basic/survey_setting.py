@@ -7,16 +7,16 @@ Created on Sat Jan 20 2018
 from __future__ import absolute_import, print_function, division
 from __future__ import unicode_literals, with_statement
 
+__author__ = "Yu Hao"
+
 import json
 import math
 
 from pathlib2 import Path
 import numpy as np
 
-__author__ = "Yu Hao"
-__copyright__ = "Copyright (C) 2018 Yu Hao"
 
-class SurveySetting(object):
+class SurveySetting( object):
     """
     class to hold survey settings and compute additional coordination property
     """

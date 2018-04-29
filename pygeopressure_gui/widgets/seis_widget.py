@@ -8,7 +8,6 @@ from __future__ import division, absolute_import, print_function
 from __future__ import with_statement, unicode_literals
 
 __author__ = "Yu Hao"
-__copyright__ = "Copyright (C) 2018 Yu Hao"
 
 import os
 os.environ['ETS_TOOLKIT'] = 'qt4'
