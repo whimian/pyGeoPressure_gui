@@ -82,7 +82,7 @@
         </size>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>2</number>
        </property>
        <widget class="QWidget" name="page_eaton">
         <property name="enabled">
@@ -92,7 +92,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>263</width>
+          <width>300</width>
           <height>452</height>
          </rect>
         </property>
@@ -166,7 +166,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>263</width>
+          <width>300</width>
           <height>452</height>
          </rect>
         </property>
@@ -264,7 +264,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>263</width>
+          <width>300</width>
           <height>452</height>
          </rect>
         </property>
@@ -295,10 +295,11 @@
       <string>Import</string>
      </property>
      <addaction name="actionWell_Log"/>
-     <addaction name="actionSeismic"/>
     </widget>
     <addaction name="menuImport"/>
     <addaction name="actionOutput"/>
+    <addaction name="separator"/>
+    <addaction name="actionManageSeismic"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -429,6 +430,11 @@
   <action name="actionSectionView">
    <property name="text">
     <string>Section</string>
+   </property>
+  </action>
+  <action name="actionManageSeismic">
+   <property name="text">
+    <string>Seismic</string>
    </property>
   </action>
  </widget>

@@ -53,6 +53,7 @@ import pygeopressure_gui.qrc_resources
 from pygeopressure_gui.ui.ui_pygeopressure import Ui_MainWindow
 from pygeopressure_gui.dialogs.survey_edit_dialog import SurveyEditDialog
 from pygeopressure_gui.dialogs.survey_select_dialog import SurveySelectDialog
+from pygeopressure_gui.dialogs.seismic_manager_dialog import SeismicManagerDialog
 from pygeopressure_gui.widgets.mayavi_widget import MayaviQWidget
 from pygeopressure_gui.widgets.matplotlib_widget import MatplotlibWidget
 from pygeopressure_gui.views.map_view import MapView
@@ -86,6 +87,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.actionAbout.triggered.connect(self.aboutEvent)
         self.actionNewSurvey.triggered.connect(self.surveyEditEvent)
         self.actionSelectSurvey.triggered.connect(self.surveySelectEvent)
+        self.actionManageSeismic.triggered.connect(self.open_seismic_manager_dialog)
         self.actionMapView.triggered.connect(self.create_Map_View)
         self.DataTree.itemClicked.connect(self.handleItemChecked)
 
@@ -231,6 +233,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         survey_select_dialog = SurveySelectDialog()
         survey_select_dialog.selectButton.clicked.connect(self.populate_treeWidget)
         survey_select_dialog.exec_()
+
+    def open_seismic_manager_dialog(self):
+        seismic_manager_dialog = SeismicManagerDialog()
+        seismic_manager_dialog.exec_()
 
     def create_new_tab(self, tab_name):
         """

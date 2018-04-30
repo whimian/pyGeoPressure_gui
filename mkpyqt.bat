@@ -7,5 +7,6 @@ CD ui
 CALL pyuic4.bat -o ui_pygeopressure.py pygeopressure.ui
 CALL pyuic4.bat -o ui_survey_edit.py survey_edit.ui
 CALL pyuic4.bat -o ui_survey_select.py survey_select.ui
+CALL pyuic4.bat -o ui_seismic_manager.py seismic_manager.ui
 CD ..\..
 python app.py
