@@ -18,7 +18,7 @@ from ..basic.survey_setting import SurveySetting
 from ..widgets.survey_map_widget import SurveyMap
 from ..ui.ui_survey_select import Ui_surveySelectDialog
 
-from pygeopressure_gui import CONF
+from pygeopressure_gui.config import CONF
 
 
 class SurveySelectDialog(QDialog, Ui_surveySelectDialog):

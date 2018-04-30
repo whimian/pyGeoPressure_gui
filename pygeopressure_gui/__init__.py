@@ -1,5 +1,3 @@
-from config import CONF
-
 try:
     from pathlib import Path
 except (ImportError, AttributeError):

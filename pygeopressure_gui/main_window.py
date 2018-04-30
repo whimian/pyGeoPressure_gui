@@ -9,7 +9,7 @@ Created on Fri Jan 05 2018
 # =============================================================================
 from __future__ import (division, absolute_import, print_function,
                         with_statement, unicode_literals)
-from future.builtins import super
+from future.builtins import super, str
 
 __author__ = "Yu Hao"
 
@@ -58,7 +58,7 @@ from pygeopressure_gui.widgets.matplotlib_widget import MatplotlibWidget
 from pygeopressure_gui.views.map_view import MapView
 from pygeopressure_gui.basic.well_plotter import WellPlotter
 
-from pygeopressure_gui import CONF
+from pygeopressure_gui.config import CONF
 
 # class TreeWidgetItem(QTreeWidgetItem):
 #     def setData(self, column, role, value):
@@ -91,8 +91,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # self.statusBar().showMessage("System Status | Normal")
         self.source = None
-
-
 
     def initUI(self):
         # uic.loadUi('pygeopressure_gui/ui/pygeopressure.ui', self)
