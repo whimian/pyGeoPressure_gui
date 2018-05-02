@@ -317,6 +317,7 @@
     <addaction name="separator"/>
     <addaction name="actionMapView"/>
     <addaction name="actionSectionView"/>
+    <addaction name="actionWellLogView"/>
    </widget>
    <widget class="QMenu" name="menuSurvey">
     <property name="title">
@@ -435,6 +436,11 @@
   <action name="actionManageSeismic">
    <property name="text">
     <string>Seismic</string>
+   </property>
+  </action>
+  <action name="actionWellLogView">
+   <property name="text">
+    <string>Well log</string>
    </property>
   </action>
  </widget>

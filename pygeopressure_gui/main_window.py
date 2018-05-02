@@ -58,6 +58,7 @@ from pygeopressure_gui.widgets.mayavi_widget import MayaviQWidget
 from pygeopressure_gui.widgets.matplotlib_widget import MatplotlibWidget
 from pygeopressure_gui.views.map_view import MapView
 from pygeopressure_gui.views.section_view import SectionView
+from pygeopressure_gui.views.well_log_view import WellLogView
 from pygeopressure_gui.basic.well_plotter import WellPlotter
 
 from pygeopressure_gui.config import CONF
@@ -91,6 +92,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.actionManageSeismic.triggered.connect(self.open_seismic_manager_dialog)
         self.actionMapView.triggered.connect(self.create_Map_View)
         self.actionSectionView.triggered.connect(self.create_Section_View)
+        self.actionWellLogView.triggered.connect(self.create_Well_Log_View)
         self.DataTree.itemClicked.connect(self.handleItemChecked)
 
         # self.statusBar().showMessage("System Status | Normal")
@@ -277,6 +279,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         layout = QGridLayout(self.tab_section_view)
         self.section_view = SectionView(self.tab_section_view)
         layout.addWidget(self.section_view)
+        self.tabWidget.setCurrentWidget(self.tab_section_view)
+
+    def create_Well_Log_View(self):
+        self.tab_well_log_view = self.create_new_tab("tab_well_log_view", "Well Logs")
+        self.tab_well_log_view.view_type = "WellLogView"
+        layout = QGridLayout(self.tab_well_log_view)
+        self.well_log_view = WellLogView(self.tab_well_log_view)
+        layout.addWidget(self.well_log_view)
+        self.tabWidget.setCurrentWidget(self.tab_well_log_view)
 
     # -------------------------------------------------------------------------
     # Override default events

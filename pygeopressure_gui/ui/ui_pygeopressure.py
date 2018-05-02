@@ -198,6 +198,8 @@ class Ui_MainWindow(object):
         self.actionSectionView.setObjectName(_fromUtf8("actionSectionView"))
         self.actionManageSeismic = QtGui.QAction(MainWindow)
         self.actionManageSeismic.setObjectName(_fromUtf8("actionManageSeismic"))
+        self.actionWellLogView = QtGui.QAction(MainWindow)
+        self.actionWellLogView.setObjectName(_fromUtf8("actionWellLogView"))
         self.menuImport.addAction(self.actionWell_Log)
         self.menuData.addAction(self.menuImport.menuAction())
         self.menuData.addAction(self.actionOutput)
@@ -210,6 +212,7 @@ class Ui_MainWindow(object):
         self.menuWindow.addSeparator()
         self.menuWindow.addAction(self.actionMapView)
         self.menuWindow.addAction(self.actionSectionView)
+        self.menuWindow.addAction(self.actionWellLogView)
         self.menuSurvey.addAction(self.actionSelectSurvey)
         self.menuSurvey.addAction(self.actionNewSurvey)
         self.menuSurvey.addAction(self.actionOpen_2)
@@ -266,4 +269,5 @@ class Ui_MainWindow(object):
         self.actionMapView.setText(_translate("MainWindow", "Map view", None))
         self.actionSectionView.setText(_translate("MainWindow", "Section", None))
         self.actionManageSeismic.setText(_translate("MainWindow", "Seismic", None))
+        self.actionWellLogView.setText(_translate("MainWindow", "Well log", None))
 
