@@ -36,11 +36,8 @@ class SeismicManagerDialog(QDialog, Ui_seismic_manager_Dialog):
         self.load_data_list()
 
     def load_data_list(self):
-        file_path = Path(CONF.data_root) / CONF.current_survey / "Seismics" / ".seismics"
-
-        # for folder in data_root.glob("*/"):
-        #     if list(folder.glob('*.survey')):
-        #         dnames.append(folder.stem)
+        file_path = Path(CONF.data_root) / \
+                    CONF.current_survey / "Seismics" / ".seismics"
         with open(str(file_path), "r") as fl:
             data_dict = json.load(fl)
             for name in data_dict.keys():
@@ -51,7 +48,8 @@ class SeismicManagerDialog(QDialog, Ui_seismic_manager_Dialog):
 
     def display_data_info(self):
         data_name = self.data_list_Widget.currentItem().text()
-        file_path = Path(CONF.data_root) / CONF.current_survey / "Seismics" / ("."+ data_name)
+        file_path = Path(CONF.data_root) / \
+                    CONF.current_survey / "Seismics" / ("."+ data_name)
         if file_path.exists():
             with open(str(file_path), "r") as fl:
                 data_dict = json.load(fl)

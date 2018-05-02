@@ -57,6 +57,7 @@ from pygeopressure_gui.dialogs.seismic_manager_dialog import SeismicManagerDialo
 from pygeopressure_gui.widgets.mayavi_widget import MayaviQWidget
 from pygeopressure_gui.widgets.matplotlib_widget import MatplotlibWidget
 from pygeopressure_gui.views.map_view import MapView
+from pygeopressure_gui.views.section_view import SectionView
 from pygeopressure_gui.basic.well_plotter import WellPlotter
 
 from pygeopressure_gui.config import CONF
@@ -89,6 +90,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.actionSelectSurvey.triggered.connect(self.surveySelectEvent)
         self.actionManageSeismic.triggered.connect(self.open_seismic_manager_dialog)
         self.actionMapView.triggered.connect(self.create_Map_View)
+        self.actionSectionView.triggered.connect(self.create_Section_View)
         self.DataTree.itemClicked.connect(self.handleItemChecked)
 
         # self.statusBar().showMessage("System Status | Normal")
@@ -238,7 +240,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         seismic_manager_dialog = SeismicManagerDialog()
         seismic_manager_dialog.exec_()
 
-    def create_new_tab(self, tab_name):
+    def create_new_tab(self, tab_name, display_name):
         """
         add new tab to the central tab widget
         """
@@ -246,7 +248,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         new_tab.setObjectName(_fromUtf8(tab_name))
         self.tabWidget.addTab(new_tab, _fromUtf8(""))
         self.tabWidget.setTabText(self.tabWidget.indexOf(new_tab),
-                                  _translate("MainWindow", "Map View", None))
+                                  _translate("MainWindow", display_name, None))
         return new_tab
 
     def create_Well_View(self):
@@ -254,7 +256,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def create_Map_View(self):
         "Create a New Tab containing the MapView in the main TabWidget"
-        self.tab_new = self.create_new_tab("tab_new")
+        self.tab_new = self.create_new_tab("tab_new", "Map View")
         # add adtional info
         self.tab_new.view_type = "MapView"
         layout = QGridLayout(self.tab_new)
@@ -267,6 +269,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.tabWidget.setCurrentWidget(self.tab_new)
         # return the current tab
         # self.tabWidget.currentWidget()
+
+    def create_Section_View(self):
+        self.tab_section_view = self.create_new_tab("tab_section_view", "Section View")
+        # add adtional info
+        self.tab_section_view.view_type = "SectionView"
+        layout = QGridLayout(self.tab_section_view)
+        self.section_view = SectionView(self.tab_section_view)
+        layout.addWidget(self.section_view)
 
     # -------------------------------------------------------------------------
     # Override default events
