@@ -120,50 +120,100 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # self.statusBar().showMessage("{}".format(self.DataTree.selectedItems()))
         self.statusBar().showMessage("evoked")
         # for item in self.DataTree.selectedItems():
-        for ti in range(self.DataTree.topLevelItemCount()):
-            item = self.DataTree.topLevelItem(ti)
-            for i in range(item.childCount()):
-                child = item.child(i)
-                if child.checkState(0) == Qt.Checked:
-                    self.statusBar().showMessage('Displaying Data')
-                    self.plot_seis() # Plot seismic data
-                elif child.checkState(0) == Qt.Unchecked:
-                    self.statusBar().showMessage('Unchecked')
-                    if self.source is None:
-                        pass
-                    else:
-                        self.source.remove()
+        # for ti in range(self.DataTree.topLevelItemCount()):
+        #     item = self.DataTree.topLevelItem(ti)
+        item = self.DataTree.topLevelItem(0)
+        for i in range(item.childCount()):
+            child = item.child(i)
+            child_name = child.text(0)
+            if child.checkState(0) == Qt.Checked:
+                self.statusBar().showMessage('Displaying Data {}'.format(child_name))
+                self.plot_seis(child_name) # Plot seismic data
+            elif child.checkState(0) == Qt.Unchecked:
+                self.statusBar().showMessage('Unchecked')
+                # if self.source is None:
+                #     pass
+                # else:
+                #     # self.source.remove()
+                if hasattr(self, "source_{}".format(child_name)):
+                    source = getattr(self, "source_{}".format(child_name))
+                    source.remove()
 
-    def plot_seis(self):
+                    # pass
+                # elif child_name == self.mayavi_widget.visualization.scene.mlab_source.name:
+                #     self.mayavi_widget.visualization.scene.mlab_source.remove()
 
-        f3 = ppp.SeisCube("D:\\HUB\\Python\\ui_pygeopressure\\f3_seismic.json")
+
+    def plot_seis(self, dataset_name):
+        data_path = Path(CONF.data_root) / "F3" / "Seismics" / ".{}".format(dataset_name)
+        # seis_object = ppp.SeisCube(str(data_path))
+        segy_path = ""
+        with open(str(data_path), "r") as fl:
+            json_object =  json.load(fl)
+            segy_path = json_object['path']
+
+        seis_object = ppp.SeiSEGY(segy_path)
 
         # read data into a ndarray
         data_cube = list()
         start = time.time()
-        for inline in f3.inlines():
-            data_cube.append(f3.get_inline(inline, 'seis'))
+        for inline in seis_object.inlines():
+            data_cube.append(seis_object.inline(inline))
         data_cube = np.array(data_cube)
         end = time.time() - start
-
+        self.statusBar().showMessage("{}ms used for reading data".format(end))
         start2 = time.time()
+
         # Create source
-        self.source = self.mayavi_widget.visualization.scene.\
-            mlab.pipeline.scalar_field(data_cube)
-        self.source.spacing = [f3.inline_bin, f3.crline_bin, -f3.stepDepth*1.5]
+        setattr(self, "source_{}".format(dataset_name), \
+                self.mayavi_widget.visualization.scene. \
+                    mlab.pipeline.scalar_field(data_cube))
+        # self.source = self.mayavi_widget.visualization.scene.\
+        #     mlab.pipeline.scalar_field(data_cube, name=dataset_name)
 
+        self.statusBar().showMessage("type {}".format(type(self.source)))
 
-        for axis in ['x', 'y', 'z']:
-            plane = self.mayavi_widget.visualization.scene.\
-                mlab.pipeline.image_plane_widget(
-                    self.source,
-                    plane_orientation='{}_axes'.format(axis),
-                    slice_index=100,
-                    colormap='Greys')
-            # only slice is reversed(the actual data is not)
-            plane.module_manager.scalar_lut_manager.reverse_lut = True
+        getattr(self, "source_{}".format(dataset_name)).spacing = [
+            seis_object.survey_setting.inline_bin,
+            seis_object.survey_setting.crline_bin,
+            -seis_object.stepDepth*1.5]
+        # self.statusBar().showMessage("bin size {} - {}".format(seis_object.survey_setting.inline_bin, seis_object.survey_setting.crline_bin))
 
-        self.mayavi_widget.visualization.scene.\
+        x_slice = self.mayavi_widget.visualization.scene.\
+            mlab.pipeline.image_plane_widget(
+                getattr(self, "source_{}".format(dataset_name)),
+                plane_orientation='x_axes',
+                slice_index=100,
+                colormap='Greys')
+        x_slice.module_manager.scalar_lut_manager.reverse_lut = True
+
+        y_slice = self.mayavi_widget.visualization.scene.\
+            mlab.pipeline.image_plane_widget(
+                getattr(self, "source_{}".format(dataset_name)),
+                plane_orientation='y_axes',
+                slice_index=100,
+                colormap='Greys')
+        y_slice.module_manager.scalar_lut_manager.reverse_lut = True
+
+        z_slice = self.mayavi_widget.visualization.scene.\
+            mlab.pipeline.image_plane_widget(
+                getattr(self, "source_{}".format(dataset_name)),
+                plane_orientation='z_axes',
+                slice_index=100,
+                colormap='Greys')
+        z_slice.module_manager.scalar_lut_manager.reverse_lut = True
+
+        # for axis in ['x', 'y', 'z']:
+        #     plane = self.mayavi_widget.visualization.scene.\
+        #         mlab.pipeline.image_plane_widget(
+        #             self.source,
+        #             plane_orientation='{}_axes'.format(axis),
+        #             slice_index=100,
+        #             colormap='Greys')
+        #     # only slice is reversed(the actual data is not)
+        #     plane.module_manager.scalar_lut_manager.reverse_lut = True
+
+        outline = self.mayavi_widget.visualization.scene.\
             mlab.outline()
         # add direction hint
         self.mayavi_widget.visualization.scene.\
@@ -175,20 +225,21 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 ranges=[200, 650, 700, 1100, 1100, 400])
         ax.axes.label_format = '%.0f'
         # fig = self.mayavi_widget.visualization.scene.mlab.gcf()
-        self.mayavi_widget.visualization.scene.\
+        self.mayavi_widget.visualization.scene. \
             mlab.show()
+        # self.statusBar().showMessage("{}".format(self.mayavi_widget.visualization.scene.mlab.show_pipeline()))
         end2 = time.time() - start2
-        self.statusBar().showMessage("data import:{}s, display: {}".format(end, end2))
+        # self.statusBar().showMessage("data import:{}s, display: {}".format(end, end2))
 
-    def plot_well(self):
-        log_test = ppp.Log(
-            str(Path(r"D:\HUB\Python\xihu_shanghai\data\bowers_kqt1.txt")))
-        # axis = self.matplotlib_widget.axes
-        # axis.invert_yaxis()
-        # axis.ylim = [5000, 0]
-        # log_test.plot(axis)
-        well_plot_control = WellPlotter(self.matplotlib_widget.fig, log_test)
-        well_plot_control.plot_well_log()
+    # def plot_well(self):
+    #     log_test = ppp.Log(
+    #         str(Path(r"D:\HUB\Python\xihu_shanghai\data\bowers_kqt1.txt")))
+    #     # axis = self.matplotlib_widget.axes
+    #     # axis.invert_yaxis()
+    #     # axis.ylim = [5000, 0]
+    #     # log_test.plot(axis)
+    #     well_plot_control = WellPlotter(self.matplotlib_widget.fig, log_test)
+    #     well_plot_control.plot_well_log()
 
     def populate_treeWidget(self):
         survey_file = Path(CONF.data_root, CONF.current_survey, '.survey')
@@ -253,41 +304,54 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                   _translate("MainWindow", display_name, None))
         return new_tab
 
-    def create_Well_View(self):
-        pass
-
     def create_Map_View(self):
         "Create a New Tab containing the MapView in the main TabWidget"
-        self.tab_new = self.create_new_tab("tab_new", "Map View")
-        # add adtional info
-        self.tab_new.view_type = "MapView"
-        layout = QGridLayout(self.tab_new)
-        self.map_view = MapView(self.tab_new)
-        layout.addWidget(self.map_view)
+        if not hasattr(self, "tab_map_view"):
+            self.tab_map_view = self.create_new_tab("tab_map_view", "Map View")
+            # add adtional info
+            self.tab_map_view.view_type = "MapView"
+            layout = QGridLayout(self.tab_map_view)
+            self.map_view = MapView(self.tab_map_view)
+            layout.addWidget(self.map_view)
+            self.init_map_view()
+            self.tabWidget.setCurrentWidget(self.tab_new)
+            # return the current tab
+            # self.tabWidget.currentWidget()
+        else:
+            self.statusBar().showMessage('Map View already opened.')
 
+    def init_map_view(self):
         file_path = Path(CONF.data_root) / CONF.current_survey / ".survey"
         if file_path.exists():
-            self.map_view.draw_map(ppp.SurveySetting(ppp.ThreePoints(str(file_path))))
-        self.tabWidget.setCurrentWidget(self.tab_new)
-        # return the current tab
-        # self.tabWidget.currentWidget()
+            self.map_view.draw_map(
+                ppp.SurveySetting(
+                    ppp.ThreePoints(str(file_path))))
 
     def create_Section_View(self):
-        self.tab_section_view = self.create_new_tab("tab_section_view", "Section View")
-        # add adtional info
-        self.tab_section_view.view_type = "SectionView"
-        layout = QGridLayout(self.tab_section_view)
-        self.section_view = SectionView(self.tab_section_view)
-        layout.addWidget(self.section_view)
-        self.tabWidget.setCurrentWidget(self.tab_section_view)
+        if not hasattr(self, "tab_section_view"):
+            self.tab_section_view = self.create_new_tab("tab_section_view",
+                                                        "Section View")
+            # add adtional info
+            self.tab_section_view.view_type = "SectionView"
+            layout = QGridLayout(self.tab_section_view)
+            self.section_view = SectionView(self.tab_section_view)
+            layout.addWidget(self.section_view)
+            self.tabWidget.setCurrentWidget(self.tab_section_view)
+        else:
+            self.statusBar().showMessage('Section View already opened.')
 
     def create_Well_Log_View(self):
-        self.tab_well_log_view = self.create_new_tab("tab_well_log_view", "Well Logs")
-        self.tab_well_log_view.view_type = "WellLogView"
-        layout = QGridLayout(self.tab_well_log_view)
-        self.well_log_view = WellLogView(self.tab_well_log_view)
-        layout.addWidget(self.well_log_view)
-        self.tabWidget.setCurrentWidget(self.tab_well_log_view)
+        if not hasattr(self, "tab_well_log_view"):
+            self.tab_well_log_view = self.create_new_tab("tab_well_log_view",
+                                                         "Well Logs")
+            self.tab_well_log_view.view_type = "WellLogView"
+            layout = QGridLayout(self.tab_well_log_view)
+            self.well_log_view = WellLogView(self.tab_well_log_view)
+            layout.addWidget(self.well_log_view)
+            self.tabWidget.setCurrentWidget(self.tab_well_log_view)
+        else:
+            self.statusBar().showMessage('Well Log View already opened.')
+
 
     # -------------------------------------------------------------------------
     # Override default events

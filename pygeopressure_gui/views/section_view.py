@@ -8,7 +8,7 @@ from __future__ import (division, absolute_import, print_function,
                         with_statement, unicode_literals)
 from future.builtins import super
 
-__author__ ="Yu Hao"
+__author__ = "Yu Hao"
 
 from pathlib2 import Path
 from PyQt4.QtGui import QIcon, QDialog, QFileDialog, QWidget, QHBoxLayout, QGridLayout

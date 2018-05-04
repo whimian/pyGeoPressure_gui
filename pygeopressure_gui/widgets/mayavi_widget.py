@@ -12,12 +12,12 @@ __author__ = "Yu Hao"
 import os
 os.environ['ETS_TOOLKIT'] = 'qt4'
 
-from pyface.qt.QtGui import QDialog, QWidget, QVBoxLayout, QLabel
-from PyQt4 import uic
+from pyface.qt.QtGui import QWidget, QVBoxLayout
 from pyface.qt.QtCore import Qt
 
 from traits.api import HasTraits, Instance, on_trait_change
 from traitsui.api import View, Item
+
 from mayavi.core.ui.api import MayaviScene, MlabSceneModel, SceneEditor
 
 
