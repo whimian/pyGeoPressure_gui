@@ -23,7 +23,7 @@ import json
 from pyface.qt.QtGui import (QIcon, QApplication, QMainWindow, QMessageBox,
                              QGridLayout, QTreeWidgetItem, QWidget)
 from pyface.qt import QtCore, QtGui
-from pyface.qt.QtCore import Qt, pyqtSignal
+from pyface.qt.QtCore import Qt, pyqtSignal, pyqtSlot
 # except uic which works fine
 from PyQt4 import uic
 # -----------------------------------------------------------------------------
@@ -94,6 +94,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.actionSectionView.triggered.connect(self.create_Section_View)
         self.actionWellLogView.triggered.connect(self.create_Well_Log_View)
         self.DataTree.itemClicked.connect(self.handleItemChecked)
+
 
         # self.statusBar().showMessage("System Status | Normal")
         self.source = None
@@ -337,8 +338,31 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.section_view = SectionView(self.tab_section_view)
             layout.addWidget(self.section_view)
             self.tabWidget.setCurrentWidget(self.tab_section_view)
+
+            file_path = Path(CONF.data_root) / CONF.current_survey / ".survey"
+            if file_path.exists():
+                survey_set = ppp.SurveySetting(ppp.ThreePoints(str(file_path)))
+                inline_SpinBox = self.section_view.control_widget.inline_SpinBox
+                inline_SpinBox.setMaximum(survey_set.endInline)
+                inline_SpinBox.setMinimum(survey_set.startInline)
+                inline_SpinBox.setSingleStep(survey_set.stepInline)
+                inline_SpinBox.setValue(survey_set.startInline)
+                crline_SpinBox = self.section_view.control_widget.crline_SpinBox
+                crline_SpinBox.setMaximum(survey_set.endCrline)
+                crline_SpinBox.setMinimum(survey_set.startCrline)
+                crline_SpinBox.setSingleStep(survey_set.stepCrline)
+                crline_SpinBox.setValue(survey_set.stepCrline)
+                seis_path = Path(CONF.data_root) / \
+                    CONF.current_survey / "Seismics" / ".seismics"
+                self.section_view.load_data_list(seis_path)
+
+                self.section_view.status.connect(self.show_section_view_status)
         else:
             self.statusBar().showMessage('Section View already opened.')
+
+    @pyqtSlot(str)
+    def show_section_view_status(self, message):
+        self.statusBar().showMessage(message)
 
     def create_Well_Log_View(self):
         if not hasattr(self, "tab_well_log_view"):

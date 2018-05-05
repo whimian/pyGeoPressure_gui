@@ -49,19 +49,6 @@
    <property name="title">
     <string>control</string>
    </property>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>20</y>
-      <width>59</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>In-line:</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
@@ -88,7 +75,7 @@
    <widget class="QSpinBox" name="inline_SpinBox">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>30</x>
       <y>40</y>
       <width>91</width>
       <height>23</height>
@@ -96,26 +83,45 @@
     </property>
    </widget>
    <widget class="QSpinBox" name="crline_SpinBox">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>30</x>
       <y>90</y>
       <width>91</width>
       <height>23</height>
      </rect>
     </property>
    </widget>
-   <widget class="QLabel" name="label_3">
+   <widget class="QRadioButton" name="il_radioButton">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>70</y>
-      <width>71</width>
-      <height>17</height>
+      <x>10</x>
+      <y>20</y>
+      <width>104</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>Cross-line:</string>
+     <string>In-line</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="cl_radioButton">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>70</y>
+      <width>104</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Cross-line</string>
     </property>
    </widget>
   </widget>
