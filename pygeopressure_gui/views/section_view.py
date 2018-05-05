@@ -70,7 +70,21 @@ class SectionView(QWidget):
                         self.statusBar().showMessage("can not find data file {}".format(item.text))
 
             elif self.control_widget.cl_radioButton.isChecked() is True:
-                pass
+                if item.checkState() == QtCore.Qt.Checked:
+                    data_path = Path(CONF.data_root) / CONF.current_survey / "Seismics" / ".{}".format(item.text())
+                    if data_path.exists() is True:
+                        if not hasattr(self, "data_{}".format(item.text())):
+                            # check if data has already been loaded
+                            # create new seis object if not
+                            self.new_seis_object(item.text())
+                        self.status.emit("Reading data ...")
+                        seis_object = getattr(self, "data_{}".format(item.text()))
+                        self.status.emit("Plotting ...")
+                        seis_object.plot(ppp.CrlineIndex(self.control_widget.crline_SpinBox.value()), ax)
+                        self.matplotlib_widget.fig.canvas.draw()
+                        self.status.emit("")
+                    else:
+                        self.statusBar().showMessage("can not find data file {}".format(item.text))
 
     def new_seis_object(self, name):
         # emit status signal to MainWindow
