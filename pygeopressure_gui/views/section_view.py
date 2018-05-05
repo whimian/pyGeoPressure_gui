@@ -50,10 +50,32 @@ class SectionView(QWidget):
         self.matplotlib_widget = MatplotlibWidget(self)
         layout.addWidget(self.control_widget)
         layout.addWidget(self.matplotlib_widget)
+        self.control_widget.colormap_ComboBox.addItems([
+            'seismic_od', 'seismic', 'viridis', 'plasma', 'inferno', 'magma',
+            'Greys', 'Purples', 'Blues', 'Greens', 'Oranges', 'Reds',
+            'YlOrBr', 'YlOrRd', 'OrRd', 'PuRd', 'RdPu', 'BuPu',
+            'GnBu', 'PuBu', 'YlGnBu', 'PuBuGn', 'BuGn', 'YlGn',
+            'binary', 'gist_yarg', 'gist_gray', 'gray', 'bone', 'pink',
+            'spring', 'summer', 'autumn', 'winter', 'cool', 'Wistia',
+            'hot', 'afmhot', 'gist_heat', 'copper',
+            'PiYG', 'PRGn', 'BrBG', 'PuOr', 'RdGy', 'RdBu',
+            'RdYlBu', 'RdYlGn', 'Spectral', 'coolwarm', 'bwr',
+            'Pastel1', 'Pastel2', 'Paired', 'Accent',
+            'Dark2', 'Set1', 'Set2', 'Set3',
+            'tab10', 'tab20', 'tab20b', 'tab20c',
+            'flag', 'prism', 'ocean', 'gist_earth', 'terrain', 'gist_stern',
+            'gnuplot', 'gnuplot2', 'CMRmap', 'cubehelix', 'brg', 'hsv',
+            'gist_rainbow', 'rainbow', 'jet', 'nipy_spectral', 'gist_ncar'])
 
     @pyqtSlot()
     def plot_section(self):
         # self.matplotlib_widget.fig.clf()
+        colormap = self.control_widget.colormap_ComboBox.currentText()
+        if self.control_widget.wiggle_CheckBox.checkState() == Qt.Checked:
+            kind = 'vawt'
+        else:
+            kind = 'img'
+
         ax = self.matplotlib_widget.axes
         ax.cla()
         for idx in range(self.control_widget.data_listWidget.count()):
@@ -73,7 +95,8 @@ class SectionView(QWidget):
                                               "data_{}".format(item.text()))
                         self.status.emit("Plotting ...")
                         seis_object.plot(ppp.InlineIndex(
-                            self.control_widget.inline_SpinBox.value()), ax)
+                            self.control_widget.inline_SpinBox.value()),
+                            ax, kind=kind, cm=colormap)
                         self.matplotlib_widget.fig.canvas.draw()
                         self.status.emit("")
                     else:
@@ -94,7 +117,8 @@ class SectionView(QWidget):
                                               "data_{}".format(item.text()))
                         self.status.emit("Plotting ...")
                         seis_object.plot(ppp.CrlineIndex(
-                            self.control_widget.crline_SpinBox.value()), ax)
+                            self.control_widget.crline_SpinBox.value()),
+                            ax, kind=kind, cm=colormap)
                         self.matplotlib_widget.fig.canvas.draw()
                         self.status.emit("")
                     else:

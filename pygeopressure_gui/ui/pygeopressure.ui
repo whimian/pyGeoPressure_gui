@@ -45,8 +45,14 @@
        </property>
        <property name="maximumSize">
         <size>
-         <width>252</width>
+         <width>200</width>
          <height>16777215</height>
+        </size>
+       </property>
+       <property name="baseSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
         </size>
        </property>
        <property name="toolTip">
@@ -82,7 +88,7 @@
         </size>
        </property>
        <property name="currentIndex">
-        <number>2</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="page_eaton">
         <property name="enabled">
@@ -93,7 +99,7 @@
           <x>0</x>
           <y>0</y>
           <width>300</width>
-          <height>452</height>
+          <height>515</height>
          </rect>
         </property>
         <property name="accessibleName">
@@ -167,7 +173,7 @@
           <x>0</x>
           <y>0</y>
           <width>300</width>
-          <height>452</height>
+          <height>515</height>
          </rect>
         </property>
         <attribute name="label">
@@ -259,19 +265,6 @@
          </layout>
         </widget>
        </widget>
-       <widget class="QWidget" name="page_produce">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>300</width>
-          <height>452</height>
-         </rect>
-        </property>
-        <attribute name="label">
-         <string>Production</string>
-        </attribute>
-       </widget>
       </widget>
      </widget>
     </item>
@@ -283,7 +276,7 @@
      <x>0</x>
      <y>0</y>
      <width>1068</width>
-     <height>27</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuData">
