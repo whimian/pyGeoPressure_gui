@@ -77,7 +77,7 @@
       <widget class="QToolBox" name="toolBox">
        <property name="minimumSize">
         <size>
-         <width>250</width>
+         <width>260</width>
          <height>0</height>
         </size>
        </property>
@@ -88,8 +88,288 @@
         </size>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>5</number>
        </property>
+       <widget class="QWidget" name="page_Velocity">
+        <attribute name="label">
+         <string>Velocity Conversion</string>
+        </attribute>
+        <widget class="QWidget" name="formLayoutWidget_2">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>261</width>
+           <height>111</height>
+          </rect>
+         </property>
+         <layout class="QFormLayout" name="formLayout_3">
+          <property name="labelAlignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Conversion Type</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="comboBox_2"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>INPUT</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="comboBox_3"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>OUTPUT</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="lineEdit_4"/>
+          </item>
+          <item row="3" column="1">
+           <widget class="QPushButton" name="pushButton_3">
+            <property name="text">
+             <string>Run</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>100</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="page_tdc">
+        <attribute name="label">
+         <string>Time Depth Conversion</string>
+        </attribute>
+        <widget class="QWidget" name="formLayoutWidget_3">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>261</width>
+           <height>109</height>
+          </rect>
+         </property>
+         <layout class="QFormLayout" name="formLayout_4">
+          <property name="labelAlignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Average Velocity</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="comboBox_6"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>INPUT</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="comboBox_7"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>OUTPUT</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="lineEdit_5"/>
+          </item>
+          <item row="3" column="0">
+           <spacer name="horizontalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>100</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="3" column="1">
+           <widget class="QPushButton" name="pushButton_4">
+            <property name="text">
+             <string>Run</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="page_gardner">
+        <attribute name="label">
+         <string>Density Conversion</string>
+        </attribute>
+        <widget class="QWidget" name="formLayoutWidget_4">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>261</width>
+           <height>129</height>
+          </rect>
+         </property>
+         <layout class="QFormLayout" name="formLayout_5">
+          <property name="labelAlignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_11">
+            <property name="text">
+             <string>           Gardner A</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="lineEdit_2"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_12">
+            <property name="text">
+             <string>Gardner B</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="lineEdit_3"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>Interval Velocity</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QComboBox" name="comboBox_5"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_10">
+            <property name="text">
+             <string>OUTPUT</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="lineEdit"/>
+          </item>
+          <item row="4" column="0">
+           <spacer name="horizontalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>100</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="4" column="1">
+           <widget class="QPushButton" name="pushButton_5">
+            <property name="text">
+             <string>Run</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="page_obp">
+        <attribute name="label">
+         <string>Overburden Pressure Calculation</string>
+        </attribute>
+        <widget class="QWidget" name="formLayoutWidget_5">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>261</width>
+           <height>81</height>
+          </rect>
+         </property>
+         <layout class="QFormLayout" name="formLayout_6">
+          <property name="labelAlignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_13">
+            <property name="text">
+             <string>Density</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="comboBox_4"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_14">
+            <property name="text">
+             <string>OUTPUT</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="lineEdit_6"/>
+          </item>
+          <item row="2" column="0">
+           <spacer name="horizontalSpacer_6">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>100</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="2" column="1">
+           <widget class="QPushButton" name="pushButton_6">
+            <property name="text">
+             <string>Run</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
        <widget class="QWidget" name="page_eaton">
         <property name="enabled">
          <bool>true</bool>
@@ -99,22 +379,22 @@
           <x>0</x>
           <y>0</y>
           <width>300</width>
-          <height>515</height>
+          <height>407</height>
          </rect>
         </property>
         <property name="accessibleName">
          <string/>
         </property>
         <attribute name="label">
-         <string>Eaton</string>
+         <string>Eaton Method</string>
         </attribute>
         <widget class="QWidget" name="gridLayoutWidget">
          <property name="geometry">
           <rect>
            <x>0</x>
-           <y>10</y>
-           <width>241</width>
-           <height>103</height>
+           <y>0</y>
+           <width>261</width>
+           <height>135</height>
           </rect>
          </property>
          <layout class="QFormLayout" name="formLayout">
@@ -124,37 +404,37 @@
           <item row="1" column="0">
            <widget class="QLabel" name="label">
             <property name="text">
-             <string>Wells</string>
+             <string>OBP</string>
             </property>
            </widget>
           </item>
           <item row="1" column="1">
            <widget class="QComboBox" name="comboBox"/>
           </item>
-          <item row="3" column="1">
+          <item row="5" column="1">
            <widget class="QPushButton" name="pushButton">
             <property name="text">
              <string>Calculate</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
+          <item row="5" column="0">
            <spacer name="horizontalSpacer">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
-              <width>50</width>
+              <width>100</width>
               <height>20</height>
              </size>
             </property>
            </spacer>
           </item>
-          <item row="2" column="1">
+          <item row="4" column="1">
            <widget class="QSpinBox" name="spinBox"/>
           </item>
-          <item row="2" column="0">
+          <item row="4" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
              <string>N</string>
@@ -163,6 +443,26 @@
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
            </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_17">
+            <property name="text">
+             <string>NCT a</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="lineEdit_8"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_18">
+            <property name="text">
+             <string>NCT b</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="lineEdit_9"/>
           </item>
          </layout>
         </widget>
@@ -173,81 +473,54 @@
           <x>0</x>
           <y>0</y>
           <width>300</width>
-          <height>515</height>
+          <height>407</height>
          </rect>
         </property>
         <attribute name="label">
-         <string>Bowers</string>
+         <string>Bowers Method</string>
         </attribute>
         <widget class="QWidget" name="formLayoutWidget">
          <property name="geometry">
           <rect>
            <x>0</x>
-           <y>10</y>
-           <width>241</width>
-           <height>188</height>
+           <y>0</y>
+           <width>261</width>
+           <height>155</height>
           </rect>
          </property>
          <layout class="QFormLayout" name="formLayout_2">
           <property name="labelAlignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
-          <item row="0" column="0">
+          <item row="1" column="0">
            <widget class="QLabel" name="wellLabel">
             <property name="text">
-             <string>Well</string>
+             <string>Interval Velocity</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
+          <item row="1" column="1">
            <widget class="QComboBox" name="wellComboBox"/>
           </item>
-          <item row="1" column="0">
+          <item row="2" column="0">
            <widget class="QLabel" name="aLabel">
             <property name="text">
              <string>a</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="2" column="1">
            <widget class="QLineEdit" name="aLineEdit"/>
           </item>
-          <item row="2" column="0">
+          <item row="3" column="0">
            <widget class="QLabel" name="bLabel">
             <property name="text">
              <string>b</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
-           <widget class="QLineEdit" name="bLineEdit"/>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="uLabel">
-            <property name="text">
-             <string>U</string>
-            </property>
-           </widget>
-          </item>
           <item row="3" column="1">
-           <widget class="QLineEdit" name="uLineEdit"/>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="vmaxLabel">
-            <property name="text">
-             <string>Vmax</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1">
-           <widget class="QLineEdit" name="vmaxLineEdit"/>
-          </item>
-          <item row="5" column="1">
-           <widget class="QPushButton" name="pushButton_2">
-            <property name="text">
-             <string>Calculate</string>
-            </property>
-           </widget>
+           <widget class="QLineEdit" name="bLineEdit"/>
           </item>
           <item row="5" column="0">
            <spacer name="horizontalSpacer_2">
@@ -256,11 +529,38 @@
             </property>
             <property name="sizeHint" stdset="0">
              <size>
-              <width>50</width>
+              <width>100</width>
               <height>20</height>
              </size>
             </property>
            </spacer>
+          </item>
+          <item row="5" column="1">
+           <widget class="QPushButton" name="pushButton_2">
+            <property name="text">
+             <string>Calculate</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_15">
+            <property name="text">
+             <string>OUTPUT</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_16">
+            <property name="text">
+             <string>OBP</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="comboBox_8"/>
+          </item>
+          <item row="4" column="1">
+           <widget class="QLineEdit" name="lineEdit_7"/>
           </item>
          </layout>
         </widget>
