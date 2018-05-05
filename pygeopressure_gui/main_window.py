@@ -352,6 +352,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 crline_SpinBox.setMinimum(survey_set.startCrline)
                 crline_SpinBox.setSingleStep(survey_set.stepCrline)
                 crline_SpinBox.setValue(survey_set.stepCrline)
+                step_inline_SpinBox = self.section_view.control_widget.step_inline_SpinBox
+                step_inline_SpinBox.setMinimum(survey_set.stepInline)
+                step_inline_SpinBox.setMaximum(survey_set.stepInline * (survey_set.nEast - 1))
+                step_inline_SpinBox.setSingleStep(survey_set.stepInline)
+                step_crline_SpinBox = self.section_view.control_widget.step_crline_SpinBox
+                step_crline_SpinBox.setMinimum(survey_set.stepCrline)
+                step_crline_SpinBox.setMaximum(survey_set.stepCrline * (survey_set.nEast - 1))
+                step_crline_SpinBox.setSingleStep(survey_set.stepCrline)
                 seis_path = Path(CONF.data_root) / \
                     CONF.current_survey / "Seismics" / ".seismics"
                 self.section_view.load_data_list(seis_path)

@@ -14,7 +14,7 @@ import json
 
 from pathlib2 import Path
 from PyQt4.QtGui import QWidget, QHBoxLayout, QListWidgetItem
-from PyQt4 import uic, QtCore
+from PyQt4.QtCore import Qt, pyqtSignal, pyqtSlot
 
 import pygeopressure as ppp
 
@@ -24,27 +24,34 @@ from pygeopressure_gui.config import CONF
 
 
 class SectionView(QWidget):
-
-    status = QtCore.pyqtSignal(str)
+    # define signals
+    status = pyqtSignal(str)
 
     def __init__(self, parent=None):
         super(SectionView, self).__init__()
         self.initUI()
         # connect
-        self.control_widget.il_radioButton.toggled.connect(self.radioButton_check_changed)
-        self.control_widget.cl_radioButton.toggled.connect(self.radioButton_check_changed)
-        self.control_widget.inline_SpinBox.valueChanged.connect(self.plot_section)
-        self.control_widget.crline_SpinBox.valueChanged.connect(self.plot_section)
+        self.control_widget.il_radioButton.toggled.connect(
+            self.radioButton_check_changed)
+        self.control_widget.cl_radioButton.toggled.connect(
+            self.radioButton_check_changed)
+        self.control_widget.inline_SpinBox.valueChanged.connect(
+            self.plot_section)
+        self.control_widget.crline_SpinBox.valueChanged.connect(
+            self.plot_section)
+        self.control_widget.step_inline_SpinBox.valueChanged.connect(
+            self.step_changed)
+        self.control_widget.step_crline_SpinBox.valueChanged.connect(
+            self.step_changed)
 
     def initUI(self):
-        # uic.loadUi('pygeopressure_gui/ui/survey_select.ui', self)
         layout = QHBoxLayout(self)
         self.control_widget = Section_View_Control(self)
         self.matplotlib_widget = MatplotlibWidget(self)
         layout.addWidget(self.control_widget)
         layout.addWidget(self.matplotlib_widget)
-        # layout.addWidget(self.control_widget)
 
+    @pyqtSlot()
     def plot_section(self):
         # self.matplotlib_widget.fig.clf()
         ax = self.matplotlib_widget.axes
@@ -53,44 +60,53 @@ class SectionView(QWidget):
         # for data_item in self.control_widget.data_listWidget.items:
             item = self.control_widget.data_listWidget.item(idx)
             if self.control_widget.il_radioButton.isChecked() is True:
-                if item.checkState() == QtCore.Qt.Checked:
-                    data_path = Path(CONF.data_root) / CONF.current_survey / "Seismics" / ".{}".format(item.text())
+                if item.checkState() == Qt.Checked:
+                    data_path = Path(CONF.data_root) / CONF.current_survey / \
+                        "Seismics" / ".{}".format(item.text())
                     if data_path.exists() is True:
                         if not hasattr(self, "data_{}".format(item.text())):
                             # check if data has already been loaded
                             # create new seis object if not
                             self.new_seis_object(item.text())
                         self.status.emit("Reading data ...")
-                        seis_object = getattr(self, "data_{}".format(item.text()))
+                        seis_object = getattr(self,
+                                              "data_{}".format(item.text()))
                         self.status.emit("Plotting ...")
-                        seis_object.plot(ppp.InlineIndex(self.control_widget.inline_SpinBox.value()), ax)
+                        seis_object.plot(ppp.InlineIndex(
+                            self.control_widget.inline_SpinBox.value()), ax)
                         self.matplotlib_widget.fig.canvas.draw()
                         self.status.emit("")
                     else:
-                        self.statusBar().showMessage("can not find data file {}".format(item.text))
+                        self.statusBar().showMessage(
+                            "can not find data file {}".format(item.text))
 
             elif self.control_widget.cl_radioButton.isChecked() is True:
-                if item.checkState() == QtCore.Qt.Checked:
-                    data_path = Path(CONF.data_root) / CONF.current_survey / "Seismics" / ".{}".format(item.text())
+                if item.checkState() == Qt.Checked:
+                    data_path = Path(CONF.data_root) / CONF.current_survey / \
+                        "Seismics" / ".{}".format(item.text())
                     if data_path.exists() is True:
                         if not hasattr(self, "data_{}".format(item.text())):
                             # check if data has already been loaded
                             # create new seis object if not
                             self.new_seis_object(item.text())
                         self.status.emit("Reading data ...")
-                        seis_object = getattr(self, "data_{}".format(item.text()))
+                        seis_object = getattr(self,
+                                              "data_{}".format(item.text()))
                         self.status.emit("Plotting ...")
-                        seis_object.plot(ppp.CrlineIndex(self.control_widget.crline_SpinBox.value()), ax)
+                        seis_object.plot(ppp.CrlineIndex(
+                            self.control_widget.crline_SpinBox.value()), ax)
                         self.matplotlib_widget.fig.canvas.draw()
                         self.status.emit("")
                     else:
-                        self.statusBar().showMessage("can not find data file {}".format(item.text))
+                        self.statusBar().showMessage(
+                            "can not find data file {}".format(item.text))
 
     def new_seis_object(self, name):
         # emit status signal to MainWindow
         self.status.emit("Setting up seismic data object ...")
 
-        data_path = Path(CONF.data_root) / CONF.current_survey / "Seismics" / ".{}".format(name)
+        data_path = Path(CONF.data_root) / CONF.current_survey / \
+            "Seismics" / ".{}".format(name)
         if data_path.exists() is True:
             segy_path = ""
             with open(str(data_path), "r") as fl:
@@ -101,6 +117,14 @@ class SectionView(QWidget):
         # flush status bar
         self.status.emit("")
 
+    @pyqtSlot()
+    def step_changed(self):
+        self.control_widget.inline_SpinBox.setSingleStep(
+            self.control_widget.step_inline_SpinBox.value())
+        self.control_widget.crline_SpinBox.setSingleStep(
+            self.control_widget.step_crline_SpinBox.value())
+
+    @pyqtSlot()
     def radioButton_check_changed(self):
         if self.control_widget.il_radioButton.isChecked() is True:
             self.control_widget.inline_SpinBox.setEnabled(True)
@@ -116,9 +140,10 @@ class SectionView(QWidget):
             data_dict = json.load(fl)
             for name in data_dict.keys():
                 # only initialize this way can it be set checkable
-                new_item = QListWidgetItem(name, self.control_widget.data_listWidget)
-                new_item.setFlags(new_item.flags() | QtCore.Qt.ItemIsUserCheckable)
-                new_item.setCheckState(QtCore.Qt.Unchecked)
+                new_item = QListWidgetItem(name,
+                                           self.control_widget.data_listWidget)
+                new_item.setFlags(new_item.flags() | Qt.ItemIsUserCheckable)
+                new_item.setCheckState(Qt.Unchecked)
 
 
 class Section_View_Control(QWidget, Ui_section_View_Control):
