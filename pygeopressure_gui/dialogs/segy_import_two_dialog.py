@@ -6,7 +6,7 @@ Created on Sat May 5 2018
 """
 from __future__ import (division, absolute_import, print_function,
                         with_statement, unicode_literals)
-from future.builtins import super
+# from future.builtins import super
 
 __author__ = "Yu Hao"
 
@@ -15,7 +15,7 @@ from pathlib2 import Path
 
 from PyQt4.QtGui import QIcon, QDialog, QFileDialog, QTableWidgetItem
 from PyQt4 import uic
-from PyQt4.QtCore import Qt, pyqtSlot
+from PyQt4.QtCore import Qt, pyqtSlot, pyqtSignal
 
 import pygeopressure as ppp
 
@@ -23,8 +23,11 @@ from pygeopressure_gui.ui.ui_segy_import_two_dialog import Ui_segy_import_two_Di
 from pygeopressure_gui.config import CONF
 
 class SegyImportTwoDialog(QDialog, Ui_segy_import_two_Dialog):
+
+    data_imported = pyqtSignal()
+
     def __init__(self, file_path, info_dict):
-        super().__init__()
+        super(SegyImportTwoDialog, self).__init__()
         self.setupUi(self)
         self.file_path = file_path
         self.info_from_parent = info_dict
@@ -54,3 +57,5 @@ class SegyImportTwoDialog(QDialog, Ui_segy_import_two_Dialog):
 
         with open(str(info_file_path), "w") as fl:
             json.dump(info_dict, fl, indent=4)
+        # emit the data_imported SIGNAL
+        self.data_imported.emit()

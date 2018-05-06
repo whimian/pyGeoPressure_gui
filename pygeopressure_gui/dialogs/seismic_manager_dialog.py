@@ -18,6 +18,7 @@ from PyQt4 import uic
 from PyQt4.QtCore import Qt
 
 from pygeopressure_gui.ui.ui_seismic_manager import Ui_seismic_manager_Dialog
+from pygeopressure_gui.basic.utils import get_data_files
 from pygeopressure_gui.config import CONF
 
 class SeismicManagerDialog(QDialog, Ui_seismic_manager_Dialog):
@@ -29,22 +30,17 @@ class SeismicManagerDialog(QDialog, Ui_seismic_manager_Dialog):
         # connect
         self.data_list_Widget.itemSelectionChanged.connect(
             self.display_data_info)
-        # self.surveyButton.clicked.connect(self.on_clicked_surveyButton)
-        # self.selectButton.clicked.connect(self.on_clicked_selectButton)
 
     def initUI(self):
         self.load_data_list()
 
     def load_data_list(self):
-        file_path = Path(CONF.data_root) / \
-                    CONF.current_survey / "Seismics" / ".seismics"
-        with open(str(file_path), "r") as fl:
-            data_dict = json.load(fl)
-            for name in data_dict.keys():
-                # only initialize this way can it be set checkable
-                new_item = QListWidgetItem(name, self.data_list_Widget)
-                new_item.setFlags(new_item.flags() | Qt.ItemIsUserCheckable)
-                new_item.setCheckState(Qt.Unchecked)
+        folder_path = Path(CONF.data_root) / \
+                    CONF.current_survey / "Seismics"
+        for name in get_data_files(folder_path):
+            new_item = QListWidgetItem(name, self.data_list_Widget)
+            new_item.setFlags(new_item.flags() | Qt.ItemIsUserCheckable)
+            new_item.setCheckState(Qt.Unchecked)
 
     def display_data_info(self):
         data_name = self.data_list_Widget.currentItem().text()

@@ -20,6 +20,7 @@ import pygeopressure as ppp
 
 from pygeopressure_gui.ui.ui_section_view_control import Ui_section_View_Control
 from pygeopressure_gui.widgets.matplotlib_widget import MatplotlibWidget
+from pygeopressure_gui.basic.utils import get_data_files
 from pygeopressure_gui.config import CONF
 
 
@@ -43,6 +44,8 @@ class SectionView(QWidget):
             self.step_changed)
         self.control_widget.step_crline_SpinBox.valueChanged.connect(
             self.step_changed)
+
+        self.load_data_list()
 
     def initUI(self):
         layout = QHBoxLayout(self)
@@ -159,15 +162,14 @@ class SectionView(QWidget):
             self.control_widget.inline_SpinBox.setEnabled(False)
             self.control_widget.crline_SpinBox.setEnabled(True)
 
-    def load_data_list(self, file_path):
-        with open(str(file_path), "r") as fl:
-            data_dict = json.load(fl)
-            for name in data_dict.keys():
-                # only initialize this way can it be set checkable
-                new_item = QListWidgetItem(name,
-                                           self.control_widget.data_listWidget)
-                new_item.setFlags(new_item.flags() | Qt.ItemIsUserCheckable)
-                new_item.setCheckState(Qt.Unchecked)
+    def load_data_list(self):
+        for name in get_data_files(
+                Path(CONF.data_root, CONF.current_survey, "Seismics")):
+            # only initialize this way can it be set checkable
+            new_item = QListWidgetItem(
+                name, self.control_widget.data_listWidget)
+            new_item.setFlags(new_item.flags() | Qt.ItemIsUserCheckable)
+            new_item.setCheckState(Qt.Unchecked)
 
 
 class Section_View_Control(QWidget, Ui_section_View_Control):

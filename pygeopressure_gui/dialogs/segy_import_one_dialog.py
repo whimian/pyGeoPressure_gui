@@ -15,7 +15,7 @@ from pathlib2 import Path
 
 from PyQt4.QtGui import QIcon, QDialog, QFileDialog, QTableWidgetItem
 from PyQt4 import uic
-from PyQt4.QtCore import Qt, pyqtSlot
+from PyQt4.QtCore import Qt, pyqtSlot, pyqtSignal
 
 import pygeopressure as ppp
 
@@ -24,8 +24,11 @@ from pygeopressure_gui.dialogs.segy_import_two_dialog import SegyImportTwoDialog
 from pygeopressure_gui.config import CONF
 
 class SegyImportOneDialog(QDialog, Ui_segy_import_one_Dialog):
+
+    data_imported = pyqtSignal()
+
     def __init__(self):
-        super().__init__()
+        super(SegyImportOneDialog, self).__init__()
         self.setupUi(self)
         # self.initUI()
         # connect
@@ -84,5 +87,11 @@ class SegyImportOneDialog(QDialog, Ui_segy_import_one_Dialog):
 
     @pyqtSlot()
     def on_clicked_next_Button(self):
-        segy_import_two_dialog = SegyImportTwoDialog(Path(self.file_path_lineEdit.text()), self.info_dict)
+        segy_import_two_dialog = SegyImportTwoDialog(
+            Path(self.file_path_lineEdit.text()), self.info_dict)
+        segy_import_two_dialog.data_imported.connect(self.emit_signal)
         segy_import_two_dialog.exec_()
+
+    @pyqtSlot()
+    def emit_signal(self):
+        self.data_imported.emit()

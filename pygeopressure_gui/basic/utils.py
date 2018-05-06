@@ -21,8 +21,8 @@ class DuplicateSurveyNameExeption(Exception):
 # =============================================================================
 def read_survey_setting(json_file, parent_window):
     "read survey settings into import window widgets"
-    with open(json_file, 'r') as file:
-        dict_survey = json.load(file)
+    with open(json_file, 'r') as fl:
+        dict_survey = json.load(fl)
         try:
             coordinate = dict_survey["Coordinate"]
             parent_window.a_inline_text.setText(str(coordinate[0][0]))
@@ -121,7 +121,7 @@ def create_survey_directory(root_dir, survey_name):
 def write_survey_file(path_file, survey_dict):
     file_to_write = path_file
     with open(str(file_to_write), "w") as fl:
-            json.dump(survey_dict, fl, indent=4)
+        json.dump(survey_dict, fl, indent=4)
 
 def create_survey_info_file(survey_root, parent_window):
     """"""
@@ -164,3 +164,17 @@ def get_available_survey_dir(data_root):
         if list(folder.glob('*.survey')):
             dnames.append(folder.stem)
     return dnames
+
+def get_data_files(dir_path):
+    """
+    get all dot file with given path
+
+    dir_path: Path
+    """
+    fnames = list()
+    # dir_path = Path(dir_path)
+    if dir_path.exists():
+        if list(dir_path.glob('.*')):
+            for item in list(dir_path.glob('.*')):
+                fnames.append(item.name[1:])
+    return fnames

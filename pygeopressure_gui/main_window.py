@@ -61,6 +61,7 @@ from pygeopressure_gui.views.map_view import MapView
 from pygeopressure_gui.views.section_view import SectionView
 from pygeopressure_gui.views.well_log_view import WellLogView
 from pygeopressure_gui.basic.well_plotter import WellPlotter
+from pygeopressure_gui.basic.utils import get_data_files
 
 from pygeopressure_gui.config import CONF
 
@@ -121,11 +122,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.show()
 
     def handleItemChecked(self):
-        # self.statusBar().showMessage("{}".format(self.DataTree.selectedItems()))
-        self.statusBar().showMessage("evoked")
-        # for item in self.DataTree.selectedItems():
-        # for ti in range(self.DataTree.topLevelItemCount()):
-        #     item = self.DataTree.topLevelItem(ti)
+        # self.statusBar().showMessage("evoked")
         item = self.DataTree.topLevelItem(0)
         for i in range(item.childCount()):
             child = item.child(i)
@@ -135,18 +132,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.plot_seis(child_name) # Plot seismic data
             elif child.checkState(0) == Qt.Unchecked:
                 self.statusBar().showMessage('Unchecked')
-                # if self.source is None:
-                #     pass
-                # else:
-                #     # self.source.remove()
                 if hasattr(self, "source_{}".format(child_name)):
                     source = getattr(self, "source_{}".format(child_name))
                     source.remove()
-
-                    # pass
-                # elif child_name == self.mayavi_widget.visualization.scene.mlab_source.name:
-                #     self.mayavi_widget.visualization.scene.mlab_source.remove()
-
 
     def plot_seis(self, dataset_name):
         data_path = Path(CONF.data_root) / "F3" / "Seismics" / ".{}".format(dataset_name)
@@ -235,16 +223,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         end2 = time.time() - start2
         # self.statusBar().showMessage("data import:{}s, display: {}".format(end, end2))
 
-    # def plot_well(self):
-    #     log_test = ppp.Log(
-    #         str(Path(r"D:\HUB\Python\xihu_shanghai\data\bowers_kqt1.txt")))
-    #     # axis = self.matplotlib_widget.axes
-    #     # axis.invert_yaxis()
-    #     # axis.ylim = [5000, 0]
-    #     # log_test.plot(axis)
-    #     well_plot_control = WellPlotter(self.matplotlib_widget.fig, log_test)
-    #     well_plot_control.plot_well_log()
-
     def populate_treeWidget(self):
         survey_file = Path(CONF.data_root, CONF.current_survey, '.survey')
         if survey_file.exists():
@@ -253,42 +231,38 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             # populate seismic data
             seis_data = QTreeWidgetItem(self.DataTree)
             seis_data.setText(0, 'Seismic')
-            # seis_data.setFlags(seis_data.flags() | Qt.ItemIsTristate | Qt.ItemIsUserCheckable)
-            with open(str(Path(CONF.data_root, CONF.current_survey, "Seismics/.seismics"))) as fl:
-                seis_dict = json.load(fl)
-                for item in seis_dict.keys():
-                    f3 = QTreeWidgetItem(seis_data)
-                    f3.setFlags(f3.flags() | Qt.ItemIsUserCheckable)
-                    f3.setText(0, item)
-                    f3.setCheckState(0, Qt.Unchecked)
+            for item in get_data_files(
+                    Path(CONF.data_root, CONF.current_survey, "Seismics")):
+                f3 = QTreeWidgetItem(seis_data)
+                f3.setFlags(f3.flags() | Qt.ItemIsUserCheckable)
+                f3.setText(0, item)
+                f3.setCheckState(0, Qt.Unchecked)
             # populate well data
             well_data = QTreeWidgetItem(self.DataTree)
             well_data.setText(0, 'Wells')
-            with open(str(Path(CONF.data_root, CONF.current_survey, "Wellinfo/.wellinfo"))) as fl:
-                well_dict = json.load(fl)
-                for item in well_dict.keys():
-                    f3 = QTreeWidgetItem(well_data)
-                    f3.setFlags(f3.flags() | Qt.ItemIsUserCheckable)
-                    f3.setText(0, item)
-                    f3.setCheckState(0, Qt.Unchecked)
+            for item in get_data_files(
+                    Path(CONF.data_root, CONF.current_survey, "Wellinfo")):
+                f3 = QTreeWidgetItem(well_data)
+                f3.setFlags(f3.flags() | Qt.ItemIsUserCheckable)
+                f3.setText(0, item)
+                f3.setCheckState(0, Qt.Unchecked)
             # populate surface data
             surface_data = QTreeWidgetItem(self.DataTree)
             surface_data.setText(0, 'Surfaces')
-            with open(str(Path(CONF.data_root, CONF.current_survey, "Surfaces/.surfaces"))) as fl:
-                surface_dict = json.load(fl)
-                for item in surface_dict.keys():
-                    f3 = QTreeWidgetItem(surface_data)
-                    f3.setFlags(f3.flags() | Qt.ItemIsUserCheckable)
-                    f3.setText(0, item)
-                    f3.setCheckState(0, Qt.Unchecked)
+            for item in get_data_files(
+                    Path(CONF.data_root, CONF.current_survey, "Surfaces")):
+                f3 = QTreeWidgetItem(surface_data)
+                f3.setFlags(f3.flags() | Qt.ItemIsUserCheckable)
+                f3.setText(0, item)
+                f3.setCheckState(0, Qt.Unchecked)
 
             self.DataTree.show()
 
-    def surveyEditEvent(self, event):
+    def surveyEditEvent(self):
         survey_edit_window = SurveyEditDialog()
         survey_edit_window.exec_()
 
-    def surveySelectEvent(self, event):
+    def surveySelectEvent(self):
         survey_select_dialog = SurveySelectDialog()
         survey_select_dialog.selectButton.clicked.connect(self.populate_treeWidget)
         survey_select_dialog.exec_()
@@ -363,9 +337,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 step_crline_SpinBox.setMinimum(survey_set.stepCrline)
                 step_crline_SpinBox.setMaximum(survey_set.stepCrline * (survey_set.nEast - 1))
                 step_crline_SpinBox.setSingleStep(survey_set.stepCrline)
-                seis_path = Path(CONF.data_root) / \
-                    CONF.current_survey / "Seismics" / ".seismics"
-                self.section_view.load_data_list(seis_path)
+                # seis_path = Path(CONF.data_root) / \
+                #     CONF.current_survey / "Seismics" / ".seismics"
+                # self.section_view.load_data_list(seis_path)
 
                 self.section_view.status.connect(self.show_section_view_status)
         else:
@@ -390,6 +364,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     @pyqtSlot()
     def create_segy_import_dialog(self):
         segy_import_dialog = SegyImportOneDialog()
+        segy_import_dialog.data_imported.connect(self.populate_treeWidget)
         segy_import_dialog.exec_()
 
     # -------------------------------------------------------------------------
@@ -400,7 +375,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     #     self.map_view.redraw()
 
     def closeEvent(self, event):
-        reply = QMessageBox.question(self, 'Message',
+        reply = QMessageBox.question(
+            self, 'Message',
             "Are you sure to quit?", QMessageBox.Yes |
             QMessageBox.No, QMessageBox.No)
 
