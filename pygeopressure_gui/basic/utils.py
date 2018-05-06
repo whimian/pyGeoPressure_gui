@@ -12,6 +12,8 @@ __author__ = "Yu Hao"
 
 import json
 
+import pygeopressure as ppp
+
 
 class DuplicateSurveyNameExeption(Exception):
     def __init__(self):
@@ -21,36 +23,31 @@ class DuplicateSurveyNameExeption(Exception):
 # =============================================================================
 def read_survey_setting(json_file, parent_window):
     "read survey settings into import window widgets"
-    with open(json_file, 'r') as fl:
-        dict_survey = json.load(fl)
-        try:
-            coordinate = dict_survey["Coordinate"]
-            parent_window.a_inline_text.setText(str(coordinate[0][0]))
-            parent_window.a_crline_text.setText(str(coordinate[0][1]))
-            parent_window.b_inline_text.setText(str(coordinate[1][0]))
-            parent_window.b_crline_text.setText(str(coordinate[1][1]))
-            parent_window.c_inline_text.setText(str(coordinate[2][0]))
-            parent_window.c_crline_text.setText(str(coordinate[2][1]))
-            parent_window.a_x_text.setText(str(coordinate[0][2]))
-            parent_window.a_y_text.setText(str(coordinate[0][3]))
-            parent_window.b_x_text.setText(str(coordinate[1][2]))
-            parent_window.b_y_text.setText(str(coordinate[1][3]))
-            parent_window.c_x_text.setText(str(coordinate[2][2]))
-            parent_window.c_y_text.setText(str(coordinate[2][3]))
-            inline_range = dict_survey["inline"]
-            parent_window.inline_0_spinBox.setValue(int(inline_range[0]))
-            parent_window.inline_1_spinBox.setValue(int(inline_range[1]))
-            parent_window.inline_step_spinBox.setValue(int(inline_range[2]))
-            crline_range = dict_survey["crline"]
-            parent_window.crline_0_spinBox.setValue(int(crline_range[0]))
-            parent_window.crline_1_spinBox.setValue(int(crline_range[1]))
-            parent_window.crline_step_spinBox.setValue(int(crline_range[2]))
-            z_range = dict_survey["depth"]
-            parent_window.z_0_spinBox.setValue(int(z_range[0]))
-            parent_window.z_1_spinBox.setValue(int(z_range[1]))
-            parent_window.z_step_spinBox.setValue(int(z_range[2]))
-        except KeyError as e:
-            print(e.message)
+    threepoint = ppp.ThreePoints(json_file)
+    parent_window.a_inline_text.setText(str(threepoint.inline_A))
+    parent_window.a_crline_text.setText(str(threepoint.crline_A))
+    parent_window.b_inline_text.setText(str(threepoint.inline_B))
+    parent_window.b_crline_text.setText(str(threepoint.crline_B))
+    parent_window.c_inline_text.setText(str(threepoint.inline_C))
+    parent_window.c_crline_text.setText(str(threepoint.crline_C))
+    parent_window.a_x_text.setText(str(threepoint.east_A))
+    parent_window.a_y_text.setText(str(threepoint.north_A))
+    parent_window.b_x_text.setText(str(threepoint.east_B))
+    parent_window.b_y_text.setText(str(threepoint.north_B))
+    parent_window.c_x_text.setText(str(threepoint.east_C))
+    parent_window.c_y_text.setText(str(threepoint.north_C))
+
+    parent_window.inline_0_spinBox.setValue(int(threepoint.startInline))
+    parent_window.inline_1_spinBox.setValue(int(threepoint.endInline))
+    parent_window.inline_step_spinBox.setValue(int(threepoint.stepInline))
+
+    parent_window.crline_0_spinBox.setValue(int(threepoint.startCrline))
+    parent_window.crline_1_spinBox.setValue(int(threepoint.endCrline))
+    parent_window.crline_step_spinBox.setValue(int(threepoint.stepCrline))
+
+    parent_window.z_0_spinBox.setValue(int(threepoint.startDepth))
+    parent_window.z_1_spinBox.setValue(int(threepoint.endDepth))
+    parent_window.z_step_spinBox.setValue(int(threepoint.stepDepth))
 
 def discern_setting_from_gui(parent_window):
     "read survey settings from window widgets as a dict"
