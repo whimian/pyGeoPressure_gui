@@ -112,8 +112,9 @@ def create_survey_directory(root_dir, survey_name):
                          root_dir / survey_name / 'Surfaces']
         for directory in dir_to_create:
             directory.mkdir()
-            file_path = directory / ".{}".format(str(directory.name).lower())
-            file_path.touch()
+        # new folder structure does not require folder dot file
+        #     file_path = directory / ".{}".format(str(directory.name).lower())
+        #     file_path.touch()
         return survey_root
     except WindowsError:
         raise DuplicateSurveyNameExeption()
