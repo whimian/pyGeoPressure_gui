@@ -165,10 +165,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.statusBar().showMessage("type {}".format(type(self.source)))
 
+        scale = seis_object.survey_setting.inline_bin * seis_object.survey_setting.stepInline / seis_object.stepDepth / 2.5
         getattr(self, "source_{}".format(dataset_name)).spacing = [
-            seis_object.survey_setting.inline_bin,
-            seis_object.survey_setting.crline_bin,
-            -seis_object.stepDepth*1.5]
+            seis_object.survey_setting.inline_bin * seis_object.survey_setting.stepInline,
+            seis_object.survey_setting.crline_bin * seis_object.survey_setting.stepCrline,
+            -seis_object.stepDepth * scale]
         # self.statusBar().showMessage("bin size {} - {}".format(seis_object.survey_setting.inline_bin, seis_object.survey_setting.crline_bin))
 
         x_slice = self.mayavi_widget.visualization.scene.\
@@ -176,7 +177,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 getattr(self, "source_{}".format(dataset_name)),
                 plane_orientation='x_axes',
                 slice_index=100,
-                colormap='Greys')
+                colormap='Greys',
+                name="inline_slice")
         x_slice.module_manager.scalar_lut_manager.reverse_lut = True
 
         y_slice = self.mayavi_widget.visualization.scene.\
@@ -184,7 +186,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 getattr(self, "source_{}".format(dataset_name)),
                 plane_orientation='y_axes',
                 slice_index=100,
-                colormap='Greys')
+                colormap='Greys', name="crline_slice")
         y_slice.module_manager.scalar_lut_manager.reverse_lut = True
 
         z_slice = self.mayavi_widget.visualization.scene.\
@@ -192,7 +194,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 getattr(self, "source_{}".format(dataset_name)),
                 plane_orientation='z_axes',
                 slice_index=100,
-                colormap='Greys')
+                colormap='Greys',
+                name='z_slice')
         z_slice.module_manager.scalar_lut_manager.reverse_lut = True
 
         # for axis in ['x', 'y', 'z']:
