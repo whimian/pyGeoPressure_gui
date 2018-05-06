@@ -137,15 +137,28 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     source.remove()
 
     def plot_seis(self, dataset_name):
-        data_path = Path(CONF.data_root) / CONF.current_survey / "Seismics" / ".{}".format(dataset_name)
+        data_path = Path(CONF.data_root) / CONF.current_survey / \
+            "Seismics" / ".{}".format(dataset_name)
         # seis_object = ppp.SeisCube(str(data_path))
         segy_path = ""
+        inDepth = None
+        property_type = None
         with open(str(data_path), "r") as fl:
-            json_object =  json.load(fl)
+            json_object = json.load(fl)
             segy_path = json_object['path']
+            property_type = json_object['Property_Type']
+            inDepth = json_object['inDepth']
 
         seis_object = ppp.SeiSEGY(segy_path)
-
+        seis_object.inDepth = inDepth
+        seis_object.property_type = property_type
+        cm = ""
+        if seis_object.property_type == 'Reflection':
+            cm = u'seismic'
+        elif seis_object.property_type == "Velocity":
+            cm = u'jet'
+        else:
+            cm = u"seismic"
         # read data into a ndarray
         data_cube = list()
         start = time.time()
@@ -165,7 +178,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.statusBar().showMessage("type {}".format(type(self.source)))
 
-        scale = seis_object.survey_setting.inline_bin * seis_object.survey_setting.stepInline / seis_object.stepDepth / 2.5
+        # scale = seis_object.survey_setting.inline_bin * seis_object.survey_setting.stepInline / seis_object.stepDepth / 2.5
+        length_inline = (seis_object.survey_setting.nEast - 1) * seis_object.survey_setting.stepInline * seis_object.survey_setting.inline_bin
+        length_depth = (seis_object.survey_setting.nDepth - 1) * seis_object.survey_setting.stepDepth
+        scale = 0.5 * length_inline / length_depth
+
         getattr(self, "source_{}".format(dataset_name)).spacing = [
             seis_object.survey_setting.inline_bin * seis_object.survey_setting.stepInline,
             seis_object.survey_setting.crline_bin * seis_object.survey_setting.stepCrline,
@@ -176,8 +193,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             mlab.pipeline.image_plane_widget(
                 getattr(self, "source_{}".format(dataset_name)),
                 plane_orientation='x_axes',
-                slice_index=100,
-                colormap='Greys',
+                slice_index=int(seis_object.survey_setting.nEast // 2),
+                colormap=cm,
                 name="inline_slice")
         x_slice.module_manager.scalar_lut_manager.reverse_lut = True
 
@@ -185,16 +202,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             mlab.pipeline.image_plane_widget(
                 getattr(self, "source_{}".format(dataset_name)),
                 plane_orientation='y_axes',
-                slice_index=100,
-                colormap='Greys', name="crline_slice")
+                slice_index=int(seis_object.survey_setting.nNorth // 2),
+                colormap=cm, name="crline_slice")
         y_slice.module_manager.scalar_lut_manager.reverse_lut = True
 
         z_slice = self.mayavi_widget.visualization.scene.\
             mlab.pipeline.image_plane_widget(
                 getattr(self, "source_{}".format(dataset_name)),
                 plane_orientation='z_axes',
-                slice_index=100,
-                colormap='Greys',
+                slice_index=int(seis_object.survey_setting.nDepth // 2),
+                colormap=cm,
                 name='z_slice')
         z_slice.module_manager.scalar_lut_manager.reverse_lut = True
 
@@ -219,6 +236,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 xlabel='inline', ylabel='crline', zlabel='depth',
                 ranges=[200, 650, 700, 1100, 1100, 400])
         ax.axes.label_format = '%.0f'
+
+        self.mayavi_widget.visualization.scene.mlab.colorbar(orientation='vertical', label_fmt='%.1f')
         # fig = self.mayavi_widget.visualization.scene.mlab.gcf()
         self.mayavi_widget.visualization.scene. \
             mlab.show()
