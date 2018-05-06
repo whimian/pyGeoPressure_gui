@@ -137,7 +137,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     source.remove()
 
     def plot_seis(self, dataset_name):
-        data_path = Path(CONF.data_root) / "F3" / "Seismics" / ".{}".format(dataset_name)
+        data_path = Path(CONF.data_root) / CONF.current_survey / "Seismics" / ".{}".format(dataset_name)
         # seis_object = ppp.SeisCube(str(data_path))
         segy_path = ""
         with open(str(data_path), "r") as fl:
@@ -402,7 +402,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 # Utilities
 # =============================================================================
 def save_config():
-    if Path(CONF.data_root + CONF.current_survey).exists():
+    survey_path = Path(CONF.data_root) / CONF.current_survey
+    if survey_path.exists():
         CONF.to_json(CONF.setting_abs_path)
 
 def start():
