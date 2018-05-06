@@ -1,4 +1,5 @@
-{
+{	
+	"path": "D:\\poststack_f3.sgy",
     "inline_range": [200, 650, 2],
     "z_range": [400, 1100, 4],
     "crline_range": [700, 1200, 2]
