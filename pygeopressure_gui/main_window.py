@@ -54,6 +54,7 @@ from pygeopressure_gui.ui.ui_pygeopressure import Ui_MainWindow
 from pygeopressure_gui.dialogs.survey_edit_dialog import SurveyEditDialog
 from pygeopressure_gui.dialogs.survey_select_dialog import SurveySelectDialog
 from pygeopressure_gui.dialogs.seismic_manager_dialog import SeismicManagerDialog
+from pygeopressure_gui.dialogs.segy_import_one_dialog import SegyImportOneDialog
 from pygeopressure_gui.widgets.mayavi_widget import MayaviQWidget
 from pygeopressure_gui.widgets.matplotlib_widget import MatplotlibWidget
 from pygeopressure_gui.views.map_view import MapView
@@ -93,6 +94,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.actionMapView.triggered.connect(self.create_Map_View)
         self.actionSectionView.triggered.connect(self.create_Section_View)
         self.actionWellLogView.triggered.connect(self.create_Well_Log_View)
+        self.actionSegy.triggered.connect(self.create_segy_import_dialog)
+
         self.DataTree.itemClicked.connect(self.handleItemChecked)
 
 
@@ -384,6 +387,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             self.statusBar().showMessage('Well Log View already opened.')
 
+    @pyqtSlot()
+    def create_segy_import_dialog(self):
+        segy_import_dialog = SegyImportOneDialog()
+        segy_import_dialog.exec_()
 
     # -------------------------------------------------------------------------
     # Override default events

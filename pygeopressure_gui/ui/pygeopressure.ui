@@ -91,6 +91,14 @@
         <number>5</number>
        </property>
        <widget class="QWidget" name="page_Velocity">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>300</width>
+          <height>407</height>
+         </rect>
+        </property>
         <attribute name="label">
          <string>Velocity Conversion</string>
         </attribute>
@@ -161,6 +169,14 @@
         </widget>
        </widget>
        <widget class="QWidget" name="page_tdc">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>300</width>
+          <height>407</height>
+         </rect>
+        </property>
         <attribute name="label">
          <string>Time Depth Conversion</string>
         </attribute>
@@ -231,6 +247,14 @@
         </widget>
        </widget>
        <widget class="QWidget" name="page_gardner">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>300</width>
+          <height>407</height>
+         </rect>
+        </property>
         <attribute name="label">
          <string>Density Conversion</string>
         </attribute>
@@ -311,6 +335,14 @@
         </widget>
        </widget>
        <widget class="QWidget" name="page_obp">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>300</width>
+          <height>407</height>
+         </rect>
+        </property>
         <attribute name="label">
          <string>Overburden Pressure Calculation</string>
         </attribute>
@@ -587,7 +619,7 @@
      <property name="title">
       <string>Import</string>
      </property>
-     <addaction name="actionWell_Log"/>
+     <addaction name="actionSegy"/>
     </widget>
     <addaction name="menuImport"/>
     <addaction name="actionOutput"/>
@@ -646,9 +678,9 @@
     <string>Output</string>
    </property>
   </action>
-  <action name="actionWell_Log">
+  <action name="actionSegy">
    <property name="text">
-    <string>Well Log</string>
+    <string>SEG-Y</string>
    </property>
   </action>
   <action name="actionSeismic">
