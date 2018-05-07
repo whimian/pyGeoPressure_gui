@@ -61,7 +61,8 @@ from pygeopressure_gui.views.map_view import MapView
 from pygeopressure_gui.views.section_view import SectionView
 from pygeopressure_gui.views.well_log_view import WellLogView
 from pygeopressure_gui.basic.well_plotter import WellPlotter
-from pygeopressure_gui.basic.utils import get_data_files
+from pygeopressure_gui.basic.utils import (get_data_files, Seismic,
+    create_new_seismic_file)
 
 from pygeopressure_gui.config import CONF
 
@@ -97,9 +98,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.actionWellLogView.triggered.connect(self.create_Well_Log_View)
         self.actionSegy.triggered.connect(self.create_segy_import_dialog)
 
+        self.toolBox.currentChanged.connect(self.update_velocity_conversion_panel)
+        self.runButton_Velocity_Conversion.clicked.connect(self.run_velocity_conversion)
+
         self.DataTree.itemClicked.connect(self.handleItemChecked)
-
-
         # self.statusBar().showMessage("System Status | Normal")
         self.source = None
 
@@ -119,6 +121,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # self.mayavi_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.populate_treeWidget()
+        self.update_velocity_conversion_panel(0)
         self.show()
 
     def handleItemChecked(self):
@@ -178,16 +181,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.statusBar().showMessage("type {}".format(type(self.source)))
 
-        # scale = seis_object.survey_setting.inline_bin * seis_object.survey_setting.stepInline / seis_object.stepDepth / 2.5
-        length_inline = (seis_object.survey_setting.nEast - 1) * seis_object.survey_setting.stepInline * seis_object.survey_setting.inline_bin
-        length_depth = (seis_object.survey_setting.nDepth - 1) * seis_object.survey_setting.stepDepth
+        length_inline = (seis_object.survey_setting.nEast - 1) * \
+                        seis_object.survey_setting.stepInline * \
+                        seis_object.survey_setting.inline_bin
+        length_depth = (seis_object.survey_setting.nDepth - 1) * \
+                       seis_object.survey_setting.stepDepth
         scale = 0.5 * length_inline / length_depth
 
         getattr(self, "source_{}".format(dataset_name)).spacing = [
-            seis_object.survey_setting.inline_bin * seis_object.survey_setting.stepInline,
-            seis_object.survey_setting.crline_bin * seis_object.survey_setting.stepCrline,
+            seis_object.survey_setting.inline_bin * \
+            seis_object.survey_setting.stepInline,
+            seis_object.survey_setting.crline_bin * \
+            seis_object.survey_setting.stepCrline,
             -seis_object.stepDepth * scale]
-        # self.statusBar().showMessage("bin size {} - {}".format(seis_object.survey_setting.inline_bin, seis_object.survey_setting.crline_bin))
 
         x_slice = self.mayavi_widget.visualization.scene.\
             mlab.pipeline.image_plane_widget(
@@ -237,13 +243,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 ranges=[200, 650, 700, 1100, 1100, 400])
         ax.axes.label_format = '%.0f'
 
-        self.mayavi_widget.visualization.scene.mlab.colorbar(orientation='vertical', label_fmt='%.1f')
-        # fig = self.mayavi_widget.visualization.scene.mlab.gcf()
+        self.mayavi_widget.visualization.scene.mlab.colorbar(
+            orientation='vertical', label_fmt='%.1f')
         self.mayavi_widget.visualization.scene. \
             mlab.show()
-        # self.statusBar().showMessage("{}".format(self.mayavi_widget.visualization.scene.mlab.show_pipeline()))
-        end2 = time.time() - start2
-        # self.statusBar().showMessage("data import:{}s, display: {}".format(end, end2))
 
     def populate_treeWidget(self):
         survey_file = Path(CONF.data_root, CONF.current_survey, '.survey')
@@ -286,7 +289,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def surveySelectEvent(self):
         survey_select_dialog = SurveySelectDialog()
-        survey_select_dialog.selectButton.clicked.connect(self.populate_treeWidget)
+        survey_select_dialog.selectButton.clicked.connect(
+            self.populate_treeWidget)
         survey_select_dialog.exec_()
 
     def open_seismic_manager_dialog(self):
@@ -303,7 +307,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.tabWidget.setTabText(self.tabWidget.indexOf(new_tab),
                                   _translate("MainWindow", display_name, None))
         return new_tab
-
+    # -------------------------------------------------------------------------
+    # Map View
+    # -------------------------------------------------------------------------
     def create_Map_View(self):
         "Create a New Tab containing the MapView in the main TabWidget"
         if not hasattr(self, "tab_map_view"):
@@ -351,13 +357,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 crline_SpinBox.setMinimum(survey_set.startCrline)
                 crline_SpinBox.setSingleStep(survey_set.stepCrline)
                 crline_SpinBox.setValue(survey_set.stepCrline)
-                step_inline_SpinBox = self.section_view.control_widget.step_inline_SpinBox
+                step_inline_SpinBox = \
+                    self.section_view.control_widget.step_inline_SpinBox
                 step_inline_SpinBox.setMinimum(survey_set.stepInline)
-                step_inline_SpinBox.setMaximum(survey_set.stepInline * (survey_set.nEast - 1))
+                step_inline_SpinBox.setMaximum(
+                    survey_set.stepInline * (survey_set.nEast - 1))
                 step_inline_SpinBox.setSingleStep(survey_set.stepInline)
-                step_crline_SpinBox = self.section_view.control_widget.step_crline_SpinBox
+                step_crline_SpinBox = \
+                    self.section_view.control_widget.step_crline_SpinBox
                 step_crline_SpinBox.setMinimum(survey_set.stepCrline)
-                step_crline_SpinBox.setMaximum(survey_set.stepCrline * (survey_set.nEast - 1))
+                step_crline_SpinBox.setMaximum(
+                    survey_set.stepCrline * (survey_set.nEast - 1))
                 step_crline_SpinBox.setSingleStep(survey_set.stepCrline)
                 # seis_path = Path(CONF.data_root) / \
                 #     CONF.current_survey / "Seismics" / ".seismics"
@@ -388,7 +398,29 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         segy_import_dialog = SegyImportOneDialog()
         segy_import_dialog.data_imported.connect(self.populate_treeWidget)
         segy_import_dialog.exec_()
+    # -------------------------------------------------------------------------
+    # Velocity Conversion Panel
+    # -------------------------------------------------------------------------
+    @pyqtSlot(int)
+    def update_velocity_conversion_panel(self, tab_index):
+        if tab_index == 0:
+            for fname in get_data_files(CONF.seismic_dir):
+                seis = Seismic(fname, CONF)
+                seis.from_file()
+                if seis.Property_Type == "Velocity":
+                    self.input_comboBox_Velocity_Conversion.addItem(seis.name)
 
+    @pyqtSlot()
+    def run_velocity_conversion(self):
+        input_name = self.input_comboBox_Velocity_Conversion.currentText()
+        output_name = self.output_lineEdit_Velocity_Conversion.text()
+        if output_name != "" and \
+                not output_name in get_data_files(CONF.seismic_dir):
+            self.statusBar().showMessage("Creating new seismic Object ...")
+            create_new_seismic_file(output_name, input_name, CONF)
+            self.populate_treeWidget()
+            self.statusBar().showMessage("Performing calculation ...")
+            self.statusBar().showMessage('')
     # -------------------------------------------------------------------------
     # Override default events
     # def resizeEvent(self, event):
