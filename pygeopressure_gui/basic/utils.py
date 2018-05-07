@@ -11,14 +11,76 @@ from future.builtins import int
 __author__ = "Yu Hao"
 
 import json
+from copy import deepcopy
+from shutil import copyfile
+
+from pathlib2 import Path
 
 import pygeopressure as ppp
 
+# -----------------------------------------------------------------------------
+# Exceptions
+# -----------------------------------------------------------------------------
 
 class DuplicateSurveyNameExeption(Exception):
     def __init__(self):
         self.message = ""
         super(DuplicateSurveyNameExeption, self).__init__(self.message)
+
+# -----------------------------------------------------------------------------
+# Classes
+# -----------------------------------------------------------------------------
+
+class Seismic(object):
+    def __init__(self, name, conf):
+        self.name = name
+        self.conf = conf
+        self.file_path = Path(conf.data_root) / conf.current_survey / \
+            'Seismics' / '.{}'.format(name)
+        self.inDepth = None
+        # self.path = None
+        self.Property_Type = None
+        self.inline_range = None
+        self.crline_range = None
+        self.z_range = None
+        self.info_dict = None
+
+    @property
+    def path(self):
+        return self.info_dict['path']
+
+    @path.setter
+    def path(self, value):
+        # self.path = value
+        self.info_dict['path'] = value
+
+    def from_file(self):
+        try:
+            with open(str(self.file_path), 'r') as fl:
+                self.info_dict = json.load(fl)
+                self.inDepth = self.info_dict['inDepth']
+                self.path = self.info_dict['path']
+                self.Property_Type = self.info_dict['Property_Type']
+                self.inline_range = self.info_dict['inline_range']
+                self.crline_range = self.info_dict['crline_range']
+                self.z_range = self.info_dict['z_range']
+        except KeyError:
+            print('missing information')
+
+    def from_dict(self, info_dict):
+        self.info_dict = info_dict
+        self.inDepth = self.info_dict['inDepth']
+        self.path = self.info_dict['path']
+        self.Property_Type = self.info_dict['Property_Type']
+        self.inline_range = self.info_dict['inline_range']
+        self.crline_range = self.info_dict['crline_range']
+        self.z_range = self.info_dict['z_range']
+
+    def to_json_file(self, output_file_name):
+        output_file_path = Path(self.conf.data_root) / self.conf.current_survey / \
+            'Seismics' / '.{}'.format(output_file_name)
+        with open(str(output_file_path), 'w') as fl:
+            json.dump(self.info_dict, fl, indent=4)
 
 # =============================================================================
 def read_survey_setting(json_file, parent_window):
@@ -152,7 +214,9 @@ def create_survey_info_file(survey_root, parent_window):
     with survey_file.open('w') as wf:
         json.dump(survey_dict, wf, indent=4)
 
-# =============================================================================
+# -----------------------------------------------------------------------------
+# Traverse folder structure
+# -----------------------------------------------------------------------------
 def get_available_survey_dir(data_root):
     """
     data_root : Path
