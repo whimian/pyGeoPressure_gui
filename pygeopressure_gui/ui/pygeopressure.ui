@@ -123,7 +123,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QComboBox" name="comboBox_2">
+           <widget class="QComboBox" name="conversion_type_comboBox">
             <item>
              <property name="text">
               <string>RMS to Interval</string>

@@ -43,6 +43,8 @@ class Seismic(object):
         self.inline_range = None
         self.crline_range = None
         self.z_range = None
+        if self.file_path.exists():
+            self.from_file()
 
     @property
     def info_dict(self):

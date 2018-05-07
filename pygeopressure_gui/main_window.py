@@ -4,24 +4,21 @@ A GUI application for geopressure prediction
 
 Created on Fri Jan 05 2018
 """
-# =============================================================================
-# Stdlib imports
-# =============================================================================
 from __future__ import (division, absolute_import, print_function,
                         with_statement, unicode_literals)
 from future.builtins import super, str
 
 __author__ = "Yu Hao"
 
+# Stdlib imports --------------------------------------------------------------
 import sys
 import time
 import json
-#==============================================================================
-# Qt imports
-#==============================================================================
+# Qt imports ------------------------------------------------------------------
 # Since we are using Mayavi, pyface has to be used
 from pyface.qt.QtGui import (QIcon, QApplication, QMainWindow, QMessageBox,
-                             QGridLayout, QTreeWidgetItem, QWidget)
+                             QGridLayout, QTreeWidgetItem, QWidget,
+                             QProgressBar)
 from pyface.qt import QtCore, QtGui
 from pyface.qt.QtCore import Qt, pyqtSignal, pyqtSlot
 # except uic which works fine
@@ -39,14 +36,10 @@ try:
 except AttributeError:
     def _translate(context, text, disambig):
         return QApplication.translate(context, text, disambig)
-# =============================================================================
-# Third Party imports
-# =============================================================================
+# Third Party imports ---------------------------------------------------------
 import numpy as np
 from pathlib2 import Path
-# =============================================================================
-# Local imports
-# =============================================================================
+# Local imports ---------------------------------------------------------------
 import pygeopressure as ppp
 
 import pygeopressure_gui.qrc_resources
@@ -64,13 +57,11 @@ from pygeopressure_gui.views.section_view import SectionView
 from pygeopressure_gui.views.well_log_view import WellLogView
 from pygeopressure_gui.basic.well_plotter import WellPlotter
 from pygeopressure_gui.basic.utils import (get_data_files, Seismic,
-    create_new_seismic_file)
+                                           create_new_seismic_file)
 
 from pygeopressure_gui.config import CONF
 
-#==============================================================================
-# Main Window
-#==============================================================================
+# Main Window =================================================================
 class MainWindow(QMainWindow, Ui_MainWindow):
 
     # itemChecked = pyqtSignal(object, int)
@@ -116,9 +107,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.update_velocity_conversion_panel(0)
         self.show()
 
-    # =========================================================================
-    # Data Tree
-    # =========================================================================
+# region Data Tree ============================================================
+
     def handleItemChecked(self):
         # self.statusBar().showMessage("evoked")
         item = self.DataTree.topLevelItem(0)
@@ -169,9 +159,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 f3.setCheckState(0, Qt.Unchecked)
 
             self.DataTree.show()
-    # =========================================================================
-    # Dialogs
-    # =========================================================================
+
+# region - Dialogs ============================================================
+
     def create_survey_edit_dialog(self):
         survey_edit_window = SurveyEditDialog()
         survey_edit_window.exec_()
@@ -191,9 +181,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         segy_import_dialog = SegyImportOneDialog()
         segy_import_dialog.data_imported.connect(self.populate_treeWidget)
         segy_import_dialog.exec_()
-    # =========================================================================
-    # Views
-    # =========================================================================
+
+# region - Views ==============================================================
     def create_new_tab(self, tab_name, display_name):
         """
         add new tab to the central tab widget
@@ -204,9 +193,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.tabWidget.setTabText(self.tabWidget.indexOf(new_tab),
                                   _translate("MainWindow", display_name, None))
         return new_tab
-    # -------------------------------------------------------------------------
-    # 3D View
-    # -------------------------------------------------------------------------
+
+    # 3D View -----------------------------------------------------------------
     def plot_seis(self, dataset_name):
         data_path = Path(CONF.data_root) / CONF.current_survey / \
             "Seismics" / ".{}".format(dataset_name)
@@ -315,9 +303,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             orientation='vertical', label_fmt='%.1f')
         self.mayavi_widget.visualization.scene. \
             mlab.show()
-    # -------------------------------------------------------------------------
-    # Map View
-    # -------------------------------------------------------------------------
+
+    # Map View ----------------------------------------------------------------
     def create_Map_View(self):
         "Create a New Tab containing the MapView in the main TabWidget"
         if not hasattr(self, "tab_map_view"):
@@ -340,9 +327,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.map_view.draw_map(
                 ppp.SurveySetting(
                     ppp.ThreePoints(str(file_path))))
-    # -------------------------------------------------------------------------
-    # Map View
-    # -------------------------------------------------------------------------
+    # Section View ------------------------------------------------------------
     def create_Section_View(self):
         if not hasattr(self, "tab_section_view"):
             self.tab_section_view = self.create_new_tab("tab_section_view",
@@ -401,12 +386,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             self.statusBar().showMessage('Well Log View already opened.')
 
-    # =========================================================================
-    # Panels
-    # =========================================================================
-    # -------------------------------------------------------------------------
-    # Velocity Conversion Panel
-    # -------------------------------------------------------------------------
+# region - Panels =============================================================
+
+    # Velocity Conversion Panel -----------------------------------------------
     @pyqtSlot(int)
     def update_velocity_conversion_panel(self, tab_index):
         if tab_index == 0:
@@ -425,16 +407,21 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.statusBar().showMessage("Creating new seismic Object ...")
             create_new_seismic_file(output_name, input_name, CONF)
             self.populate_treeWidget()
-            self.statusBar().showMessage("Performing calculation ...")
+
+            from pygeopressure_gui.calculation.velocity_conversion import interval_to_rms
+            from pygeopressure_gui.basic.utils import Seismic
+            command = self.conversion_type_comboBox.currentText()
+            self.statusBar().showMessage("Performing {} Velocity Conversion ...".format(command))
+            eval("{}(Seismic(input_name, CONF), Seismic(output_name, CONF))".format(command.replace(' ', '_').lower()))
+            # interval_to_rms(Seismic(input_name, CONF), Seismic(output_name, CONF))
             self.statusBar().showMessage('')
-    # -------------------------------------------------------------------------
-    # shared signals
-    # -------------------------------------------------------------------------
+# endregion
+    # shared slots ------------------------------------------------------------
     @pyqtSlot(str)
     def show_section_view_status(self, message):
         self.statusBar().showMessage(message)
 
-    # Override default events
+    # Override default events -------------------------------------------------
     def closeEvent(self, event):
         reply = QMessageBox.question(
             self, 'Message',
@@ -454,9 +441,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             "Copyright: CUG\n" + \
             "Author: yuhao\n" + \
             "E-mail: yuhao89@live.cn")
-# =============================================================================
-# Utilities
-# =============================================================================
+
+# region - Utilities ==========================================================
 def save_config():
     survey_path = Path(CONF.data_root) / CONF.current_survey
     if survey_path.exists():
@@ -470,3 +456,4 @@ def start():
     app = QApplication.instance()
     window = MainWindow()
     sys.exit(app.exec_())
+# endregion
