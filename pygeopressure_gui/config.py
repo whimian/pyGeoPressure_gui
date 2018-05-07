@@ -6,6 +6,7 @@ __author__ = "Yu Hao"
 import os
 import json
 from builtins import str
+from pathlib2 import Path
 
 
 class Configuration(object):
@@ -27,5 +28,21 @@ class Configuration(object):
         dict_to_dump["current_survey"] = self.current_survey
         with open(str(json_file), "w") as fl:
             json.dump(dict_to_dump, fl, indent=4)
+
+    @property
+    def survey_dir(self):
+        return Path(self.data_root) / self.current_survey
+
+    @property
+    def seismic_dir(self):
+        return Path(self.data_root) / self.current_survey / 'Seismics'
+
+    @property
+    def well_dir(self):
+        return Path(self.data_root) / self.current_survey / 'Wellinfo'
+
+    @property
+    def surface_dir(self):
+        return Path(self.data_root) / self.current_survey / 'Surfaces'
 
 CONF = Configuration()
