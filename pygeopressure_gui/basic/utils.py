@@ -38,43 +38,43 @@ class Seismic(object):
         self.file_path = Path(conf.data_root) / conf.current_survey / \
             'Seismics' / '.{}'.format(name)
         self.inDepth = None
-        # self.path = None
+        self.path = None
         self.Property_Type = None
         self.inline_range = None
         self.crline_range = None
         self.z_range = None
-        self.info_dict = None
 
     @property
-    def path(self):
-        return self.info_dict['path']
-
-    @path.setter
-    def path(self, value):
-        # self.path = value
-        self.info_dict['path'] = value
+    def info_dict(self):
+        info_dict = dict()
+        info_dict['inDepth'] = self.inDepth
+        info_dict['path'] = self.path
+        info_dict['Property_Type'] = self.Property_Type
+        info_dict['inline_range'] = self.inline_range
+        info_dict['crline_range'] = self.crline_range
+        info_dict['z_range'] = self.z_range
+        return info_dict
 
     def from_file(self):
         try:
             with open(str(self.file_path), 'r') as fl:
-                self.info_dict = json.load(fl)
-                self.inDepth = self.info_dict['inDepth']
-                self.path = self.info_dict['path']
-                self.Property_Type = self.info_dict['Property_Type']
-                self.inline_range = self.info_dict['inline_range']
-                self.crline_range = self.info_dict['crline_range']
-                self.z_range = self.info_dict['z_range']
+                info_dict = json.load(fl)
+                self.inDepth = info_dict['inDepth']
+                self.path = info_dict['path']
+                self.Property_Type = info_dict['Property_Type']
+                self.inline_range = info_dict['inline_range']
+                self.crline_range = info_dict['crline_range']
+                self.z_range = info_dict['z_range']
         except KeyError:
             print('missing information')
 
     def from_dict(self, info_dict):
-        self.info_dict = info_dict
-        self.inDepth = self.info_dict['inDepth']
-        self.path = self.info_dict['path']
-        self.Property_Type = self.info_dict['Property_Type']
-        self.inline_range = self.info_dict['inline_range']
-        self.crline_range = self.info_dict['crline_range']
-        self.z_range = self.info_dict['z_range']
+        self.inDepth = info_dict['inDepth']
+        self.path = info_dict['path']
+        self.Property_Type = info_dict['Property_Type']
+        self.inline_range = info_dict['inline_range']
+        self.crline_range = info_dict['crline_range']
+        self.z_range = info_dict['z_range']
 
     def to_json_file(self, output_file_name):
         output_file_path = Path(self.conf.data_root) / self.conf.current_survey / \
