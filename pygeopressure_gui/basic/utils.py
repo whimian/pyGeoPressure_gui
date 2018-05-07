@@ -240,3 +240,24 @@ def get_data_files(dir_path):
             for item in list(dir_path.glob('.*')):
                 fnames.append(item.name[1:])
     return fnames
+
+# -----------------------------------------------------------------------------
+def create_new_seismic_file(name, like, conf):
+    """
+    create new seismic file including dot info file and segy file according to
+    corresponding file
+    """
+    input_file = Seismic(like, conf)
+    input_file.from_file()
+    new_info_dict = deepcopy(input_file.info_dict)
+    new_segy_path = conf.seismic_dir / "{}.sgy".format(name)
+    try:
+        copyfile(str(input_file.path), str(new_segy_path))
+    except Exception as ex:
+        print(ex.message)
+    new_info_dict['path'] = str(new_segy_path)
+    # create new file
+    new_file_object = Seismic(name, conf)
+    new_file_object.from_dict(new_info_dict)
+    # write to file
+    new_file_object.to_json_file(name)
