@@ -53,8 +53,10 @@ import pygeopressure_gui.qrc_resources
 from pygeopressure_gui.ui.ui_pygeopressure import Ui_MainWindow
 from pygeopressure_gui.dialogs.survey_edit_dialog import SurveyEditDialog
 from pygeopressure_gui.dialogs.survey_select_dialog import SurveySelectDialog
-from pygeopressure_gui.dialogs.seismic_manager_dialog import SeismicManagerDialog
-from pygeopressure_gui.dialogs.segy_import_one_dialog import SegyImportOneDialog
+from pygeopressure_gui.dialogs.seismic_manager_dialog import \
+    SeismicManagerDialog
+from pygeopressure_gui.dialogs.segy_import_one_dialog import \
+    SegyImportOneDialog
 from pygeopressure_gui.widgets.mayavi_widget import MayaviQWidget
 from pygeopressure_gui.widgets.matplotlib_widget import MatplotlibWidget
 from pygeopressure_gui.views.map_view import MapView
@@ -66,15 +68,6 @@ from pygeopressure_gui.basic.utils import (get_data_files, Seismic,
 
 from pygeopressure_gui.config import CONF
 
-# class TreeWidgetItem(QTreeWidgetItem):
-#     def setData(self, column, role, value):
-#         state = self.checkState(column)
-#         QTreeWidgetItem.setData(self, column, role, value)
-#         if (role == Qt.CheckStateRole and
-#                 state != self.checkState(column)):
-#             treewidget = self.treeWidget()
-#             if treewidget is not None:
-#                 treewidget.itemChecked.emit(self, column)
 #==============================================================================
 # Main Window
 #==============================================================================
@@ -88,18 +81,23 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.program_setting = None
         self.setupUi(self)
         self.initUI()
-        # connect events
+        # connect events ------------------------------------------------------
+        # menu actions
         self.actionAbout.triggered.connect(self.aboutEvent)
-        self.actionNewSurvey.triggered.connect(self.surveyEditEvent)
-        self.actionSelectSurvey.triggered.connect(self.surveySelectEvent)
-        self.actionManageSeismic.triggered.connect(self.open_seismic_manager_dialog)
+        self.actionNewSurvey.triggered.connect(self.create_survey_edit_dialog)
+        self.actionSelectSurvey.triggered.connect(
+            self.create_survey_select_dialog)
+        self.actionManageSeismic.triggered.connect(
+            self.open_seismic_manager_dialog)
         self.actionMapView.triggered.connect(self.create_Map_View)
         self.actionSectionView.triggered.connect(self.create_Section_View)
         self.actionWellLogView.triggered.connect(self.create_Well_Log_View)
         self.actionSegy.triggered.connect(self.create_segy_import_dialog)
-
-        self.toolBox.currentChanged.connect(self.update_velocity_conversion_panel)
-        self.runButton_Velocity_Conversion.clicked.connect(self.run_velocity_conversion)
+        # toolbox
+        self.toolBox.currentChanged.connect(
+            self.update_velocity_conversion_panel)
+        self.runButton_Velocity_Conversion.clicked.connect(
+            self.run_velocity_conversion)
 
         self.DataTree.itemClicked.connect(self.handleItemChecked)
         # self.statusBar().showMessage("System Status | Normal")
@@ -114,16 +112,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.mayavi_widget = MayaviQWidget(self.tab_seis)
         layout.addWidget(self.mayavi_widget)
 
-        # layout2 = QGridLayout(self.tab_well)
-        # self.matplotlib_widget = MatplotlibWidget(self.tab_well)
-        # layout2.addWidget(self.matplotlib_widget)
-        # self.plot_well()
-
-        # self.mayavi_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.populate_treeWidget()
         self.update_velocity_conversion_panel(0)
         self.show()
 
+    # =========================================================================
+    # Data Tree
+    # =========================================================================
     def handleItemChecked(self):
         # self.statusBar().showMessage("evoked")
         item = self.DataTree.topLevelItem(0)
@@ -131,7 +126,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             child = item.child(i)
             child_name = child.text(0)
             if child.checkState(0) == Qt.Checked:
-                self.statusBar().showMessage('Displaying Data {}'.format(child_name))
+                self.statusBar().showMessage(
+                    'Displaying Data {}'.format(child_name))
                 self.plot_seis(child_name) # Plot seismic data
             elif child.checkState(0) == Qt.Unchecked:
                 self.statusBar().showMessage('Unchecked')
@@ -139,6 +135,78 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     source = getattr(self, "source_{}".format(child_name))
                     source.remove()
 
+    def populate_treeWidget(self):
+        survey_file = Path(CONF.data_root, CONF.current_survey, '.survey')
+        if survey_file.exists():
+            self.DataTree.clear()
+            self.DataTree.setHeaderLabel(CONF.current_survey)
+            # populate seismic data
+            seis_data = QTreeWidgetItem(self.DataTree)
+            seis_data.setText(0, 'Seismic')
+            for item in get_data_files(
+                    Path(CONF.data_root, CONF.current_survey, "Seismics")):
+                f3 = QTreeWidgetItem(seis_data)
+                f3.setFlags(f3.flags() | Qt.ItemIsUserCheckable)
+                f3.setText(0, item)
+                f3.setCheckState(0, Qt.Unchecked)
+            # populate well data
+            well_data = QTreeWidgetItem(self.DataTree)
+            well_data.setText(0, 'Wells')
+            for item in get_data_files(
+                    Path(CONF.data_root, CONF.current_survey, "Wellinfo")):
+                f3 = QTreeWidgetItem(well_data)
+                f3.setFlags(f3.flags() | Qt.ItemIsUserCheckable)
+                f3.setText(0, item)
+                f3.setCheckState(0, Qt.Unchecked)
+            # populate surface data
+            surface_data = QTreeWidgetItem(self.DataTree)
+            surface_data.setText(0, 'Surfaces')
+            for item in get_data_files(
+                    Path(CONF.data_root, CONF.current_survey, "Surfaces")):
+                f3 = QTreeWidgetItem(surface_data)
+                f3.setFlags(f3.flags() | Qt.ItemIsUserCheckable)
+                f3.setText(0, item)
+                f3.setCheckState(0, Qt.Unchecked)
+
+            self.DataTree.show()
+    # =========================================================================
+    # Dialogs
+    # =========================================================================
+    def create_survey_edit_dialog(self):
+        survey_edit_window = SurveyEditDialog()
+        survey_edit_window.exec_()
+
+    def create_survey_select_dialog(self):
+        survey_select_dialog = SurveySelectDialog()
+        survey_select_dialog.selectButton.clicked.connect(
+            self.populate_treeWidget)
+        survey_select_dialog.exec_()
+
+    def open_seismic_manager_dialog(self):
+        seismic_manager_dialog = SeismicManagerDialog()
+        seismic_manager_dialog.exec_()
+
+    @pyqtSlot()
+    def create_segy_import_dialog(self):
+        segy_import_dialog = SegyImportOneDialog()
+        segy_import_dialog.data_imported.connect(self.populate_treeWidget)
+        segy_import_dialog.exec_()
+    # =========================================================================
+    # Views
+    # =========================================================================
+    def create_new_tab(self, tab_name, display_name):
+        """
+        add new tab to the central tab widget
+        """
+        new_tab = QWidget()
+        new_tab.setObjectName(_fromUtf8(tab_name))
+        self.tabWidget.addTab(new_tab, _fromUtf8(""))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(new_tab),
+                                  _translate("MainWindow", display_name, None))
+        return new_tab
+    # -------------------------------------------------------------------------
+    # 3D View
+    # -------------------------------------------------------------------------
     def plot_seis(self, dataset_name):
         data_path = Path(CONF.data_root) / CONF.current_survey / \
             "Seismics" / ".{}".format(dataset_name)
@@ -247,66 +315,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             orientation='vertical', label_fmt='%.1f')
         self.mayavi_widget.visualization.scene. \
             mlab.show()
-
-    def populate_treeWidget(self):
-        survey_file = Path(CONF.data_root, CONF.current_survey, '.survey')
-        if survey_file.exists():
-            self.DataTree.clear()
-            self.DataTree.setHeaderLabel(CONF.current_survey)
-            # populate seismic data
-            seis_data = QTreeWidgetItem(self.DataTree)
-            seis_data.setText(0, 'Seismic')
-            for item in get_data_files(
-                    Path(CONF.data_root, CONF.current_survey, "Seismics")):
-                f3 = QTreeWidgetItem(seis_data)
-                f3.setFlags(f3.flags() | Qt.ItemIsUserCheckable)
-                f3.setText(0, item)
-                f3.setCheckState(0, Qt.Unchecked)
-            # populate well data
-            well_data = QTreeWidgetItem(self.DataTree)
-            well_data.setText(0, 'Wells')
-            for item in get_data_files(
-                    Path(CONF.data_root, CONF.current_survey, "Wellinfo")):
-                f3 = QTreeWidgetItem(well_data)
-                f3.setFlags(f3.flags() | Qt.ItemIsUserCheckable)
-                f3.setText(0, item)
-                f3.setCheckState(0, Qt.Unchecked)
-            # populate surface data
-            surface_data = QTreeWidgetItem(self.DataTree)
-            surface_data.setText(0, 'Surfaces')
-            for item in get_data_files(
-                    Path(CONF.data_root, CONF.current_survey, "Surfaces")):
-                f3 = QTreeWidgetItem(surface_data)
-                f3.setFlags(f3.flags() | Qt.ItemIsUserCheckable)
-                f3.setText(0, item)
-                f3.setCheckState(0, Qt.Unchecked)
-
-            self.DataTree.show()
-
-    def surveyEditEvent(self):
-        survey_edit_window = SurveyEditDialog()
-        survey_edit_window.exec_()
-
-    def surveySelectEvent(self):
-        survey_select_dialog = SurveySelectDialog()
-        survey_select_dialog.selectButton.clicked.connect(
-            self.populate_treeWidget)
-        survey_select_dialog.exec_()
-
-    def open_seismic_manager_dialog(self):
-        seismic_manager_dialog = SeismicManagerDialog()
-        seismic_manager_dialog.exec_()
-
-    def create_new_tab(self, tab_name, display_name):
-        """
-        add new tab to the central tab widget
-        """
-        new_tab = QWidget()
-        new_tab.setObjectName(_fromUtf8(tab_name))
-        self.tabWidget.addTab(new_tab, _fromUtf8(""))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(new_tab),
-                                  _translate("MainWindow", display_name, None))
-        return new_tab
     # -------------------------------------------------------------------------
     # Map View
     # -------------------------------------------------------------------------
@@ -332,7 +340,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.map_view.draw_map(
                 ppp.SurveySetting(
                     ppp.ThreePoints(str(file_path))))
-
+    # -------------------------------------------------------------------------
+    # Map View
+    # -------------------------------------------------------------------------
     def create_Section_View(self):
         if not hasattr(self, "tab_section_view"):
             self.tab_section_view = self.create_new_tab("tab_section_view",
@@ -347,12 +357,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             file_path = Path(CONF.data_root) / CONF.current_survey / ".survey"
             if file_path.exists():
                 survey_set = ppp.SurveySetting(ppp.ThreePoints(str(file_path)))
-                inline_SpinBox = self.section_view.control_widget.inline_SpinBox
+                inline_SpinBox = \
+                    self.section_view.control_widget.inline_SpinBox
                 inline_SpinBox.setMaximum(survey_set.endInline)
                 inline_SpinBox.setMinimum(survey_set.startInline)
                 inline_SpinBox.setSingleStep(survey_set.stepInline)
                 inline_SpinBox.setValue(survey_set.startInline)
-                crline_SpinBox = self.section_view.control_widget.crline_SpinBox
+                crline_SpinBox = \
+                    self.section_view.control_widget.crline_SpinBox
                 crline_SpinBox.setMaximum(survey_set.endCrline)
                 crline_SpinBox.setMinimum(survey_set.startCrline)
                 crline_SpinBox.setSingleStep(survey_set.stepCrline)
@@ -377,10 +389,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             self.statusBar().showMessage('Section View already opened.')
 
-    @pyqtSlot(str)
-    def show_section_view_status(self, message):
-        self.statusBar().showMessage(message)
-
     def create_Well_Log_View(self):
         if not hasattr(self, "tab_well_log_view"):
             self.tab_well_log_view = self.create_new_tab("tab_well_log_view",
@@ -393,11 +401,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             self.statusBar().showMessage('Well Log View already opened.')
 
-    @pyqtSlot()
-    def create_segy_import_dialog(self):
-        segy_import_dialog = SegyImportOneDialog()
-        segy_import_dialog.data_imported.connect(self.populate_treeWidget)
-        segy_import_dialog.exec_()
+    # =========================================================================
+    # Panels
+    # =========================================================================
     # -------------------------------------------------------------------------
     # Velocity Conversion Panel
     # -------------------------------------------------------------------------
@@ -422,12 +428,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.statusBar().showMessage("Performing calculation ...")
             self.statusBar().showMessage('')
     # -------------------------------------------------------------------------
-    # Override default events
-    # def resizeEvent(self, event):
-    #     # file_path = Path(CONF.data_root) / CONF.current_survey / ".survey"
-    #     # self.map_view.draw_map(ppp.SurveySetting(ppp.ThreePoints(str(file_path))))
-    #     self.map_view.redraw()
+    # shared signals
+    # -------------------------------------------------------------------------
+    @pyqtSlot(str)
+    def show_section_view_status(self, message):
+        self.statusBar().showMessage(message)
 
+    # Override default events
     def closeEvent(self, event):
         reply = QMessageBox.question(
             self, 'Message',
@@ -447,8 +454,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             "Copyright: CUG\n" + \
             "Author: yuhao\n" + \
             "E-mail: yuhao89@live.cn")
-
-
 # =============================================================================
 # Utilities
 # =============================================================================
