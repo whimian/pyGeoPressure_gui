@@ -385,7 +385,7 @@ class Ui_MainWindow(object):
         self.label_4.setText(_translate("MainWindow", "Conversion Type", None))
         self.conversion_type_comboBox.setItemText(0, _translate("MainWindow", "RMS to Interval", None))
         self.conversion_type_comboBox.setItemText(1, _translate("MainWindow", "Interval to RMS", None))
-        self.conversion_type_comboBox.setItemText(2, _translate("MainWindow", "Inteval to Average", None))
+        self.conversion_type_comboBox.setItemText(2, _translate("MainWindow", "Interval to Average", None))
         self.conversion_type_comboBox.setItemText(3, _translate("MainWindow", "Average to Interval", None))
         self.label_3.setText(_translate("MainWindow", "INPUT", None))
         self.label_5.setText(_translate("MainWindow", "OUTPUT", None))
