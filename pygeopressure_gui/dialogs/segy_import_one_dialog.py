@@ -39,7 +39,7 @@ class SegyImportOneDialog(QDialog, Ui_segy_import_one_Dialog):
     def on_clicked_selectButton(self):
         self.file_path_lineEdit.setText(str(
             QFileDialog.getOpenFileName(
-                self, caption="Open Image", filter="Segy Files (*.sgy *.segy)")))
+                self, caption="Open Segy", filter="Segy Files (*.sgy *.segy)")))
         segy_path = Path(self.file_path_lineEdit.text())
         if segy_path.exists() is True:
             self.create_seis_object(str(segy_path))
