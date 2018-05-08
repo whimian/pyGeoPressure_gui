@@ -44,14 +44,17 @@ import pygeopressure as ppp
 
 import pygeopressure_gui.qrc_resources
 from pygeopressure_gui.ui.ui_pygeopressure import Ui_MainWindow
+# import Dialogs
 from pygeopressure_gui.dialogs.survey_edit_dialog import SurveyEditDialog
 from pygeopressure_gui.dialogs.survey_select_dialog import SurveySelectDialog
 from pygeopressure_gui.dialogs.seismic_manager_dialog import \
     SeismicManagerDialog
 from pygeopressure_gui.dialogs.segy_import_one_dialog import \
     SegyImportOneDialog
+from pygeopressure_gui.dialogs.segy_export_dialog import SegyExportDialog
 from pygeopressure_gui.widgets.mayavi_widget import MayaviQWidget
 from pygeopressure_gui.widgets.matplotlib_widget import MatplotlibWidget
+# import Views
 from pygeopressure_gui.views.map_view import MapView
 from pygeopressure_gui.views.section_view import SectionView
 from pygeopressure_gui.views.well_log_view import WellLogView
@@ -84,6 +87,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.actionSectionView.triggered.connect(self.create_Section_View)
         self.actionWellLogView.triggered.connect(self.create_Well_Log_View)
         self.actionSegy.triggered.connect(self.create_segy_import_dialog)
+        self.actionExportSegy.triggered.connect(self.create_segy_export_dialog)
         # toolbox
         self.toolBox.currentChanged.connect(
             self.update_velocity_conversion_panel)
@@ -181,6 +185,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         segy_import_dialog = SegyImportOneDialog()
         segy_import_dialog.data_imported.connect(self.populate_treeWidget)
         segy_import_dialog.exec_()
+
+    def create_segy_export_dialog(self):
+        segy_export_dialog = SegyExportDialog()
+        segy_export_dialog.exec_()
 
 # region - Views ==============================================================
     def create_new_tab(self, tab_name, display_name):

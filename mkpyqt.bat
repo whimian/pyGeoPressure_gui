@@ -12,6 +12,6 @@ CALL pyuic4.bat -o ui_section_view_control.py section_view_control.ui
 CALL pyuic4.bat -o ui_well_log_view_control.py well_log_view_control.ui
 CALL pyuic4.bat -o ui_segy_import_one_dialog.py segy_import_one.ui
 CALL pyuic4.bat -o ui_segy_import_two_dialog.py segy_import_two.ui
-
+CALL pyuic4.bat -o ui_segy_export_dialog.py segy_export.ui
 CD ..\..
 python app.py

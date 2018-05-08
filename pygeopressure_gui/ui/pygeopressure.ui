@@ -647,8 +647,14 @@
      </property>
      <addaction name="actionSegy"/>
     </widget>
+    <widget class="QMenu" name="menuExport">
+     <property name="title">
+      <string>Export</string>
+     </property>
+     <addaction name="actionExportSegy"/>
+    </widget>
     <addaction name="menuImport"/>
-    <addaction name="actionOutput"/>
+    <addaction name="menuExport"/>
     <addaction name="separator"/>
     <addaction name="actionManageSeismic"/>
    </widget>
@@ -697,11 +703,6 @@
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
-   </property>
-  </action>
-  <action name="actionOutput">
-   <property name="text">
-    <string>Output</string>
    </property>
   </action>
   <action name="actionSegy">
@@ -792,6 +793,11 @@
   <action name="actionWellLogView">
    <property name="text">
     <string>Well log</string>
+   </property>
+  </action>
+  <action name="actionExportSegy">
+   <property name="text">
+    <string>SEG-Y</string>
    </property>
   </action>
  </widget>
