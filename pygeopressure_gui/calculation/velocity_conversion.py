@@ -37,3 +37,27 @@ def rms_to_interval(input_object, output_object):
             output_data_inline[idx] = ppp.rms2int(
                 twt, input_data_inline[idx])
         output_seisegy.update(ppp.InlineIndex(il), output_data_inline)
+
+def interval_to_average(input_object, output_object):
+    input_seisegy = ppp.SeiSEGY(str(input_object.path))
+    output_seisegy = ppp.SeiSEGY(str(output_object.path))
+    twt = np.array(list(input_seisegy.depths()))
+    for il in input_seisegy.inlines():
+        input_data_inline = input_seisegy.inline(il)
+        output_data_inline = np.copy(input_data_inline)
+        for idx in range(input_seisegy.nNorth):
+            output_data_inline[idx] = ppp.int2avg(
+                twt, input_data_inline[idx])
+        output_seisegy.update(ppp.InlineIndex(il), output_data_inline)
+
+def average_to_interval(input_object, output_object):
+    input_seisegy = ppp.SeiSEGY(str(input_object.path))
+    output_seisegy = ppp.SeiSEGY(str(output_object.path))
+    twt = np.array(list(input_seisegy.depths()))
+    for il in input_seisegy.inlines():
+        input_data_inline = input_seisegy.inline(il)
+        output_data_inline = np.copy(input_data_inline)
+        for idx in range(input_seisegy.nNorth):
+            output_data_inline[idx] = ppp.avg2int(
+                twt, input_data_inline[idx])
+        output_seisegy.update(ppp.InlineIndex(il), output_data_inline)

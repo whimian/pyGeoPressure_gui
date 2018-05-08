@@ -64,6 +64,9 @@ from pygeopressure_gui.basic.utils import (get_data_files, Seismic,
 
 from pygeopressure_gui.config import CONF
 
+from pygeopressure_gui.calculation.velocity_conversion import (
+    interval_to_rms, rms_to_interval, interval_to_average, average_to_interval)
+
 # Main Window =================================================================
 class MainWindow(QMainWindow, Ui_MainWindow):
 
@@ -415,13 +418,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.statusBar().showMessage("Creating new seismic Object ...")
             create_new_seismic_file(output_name, input_name, CONF)
             self.populate_treeWidget()
-
-            from pygeopressure_gui.calculation.velocity_conversion import interval_to_rms
-            from pygeopressure_gui.basic.utils import Seismic
             command = self.conversion_type_comboBox.currentText()
-            self.statusBar().showMessage("Performing {} Velocity Conversion ...".format(command))
-            eval("{}(Seismic(input_name, CONF), Seismic(output_name, CONF))".format(command.replace(' ', '_').lower()))
-            # interval_to_rms(Seismic(input_name, CONF), Seismic(output_name, CONF))
+            self.statusBar().showMessage(
+                "Performing {} Velocity Conversion ...".format(command))
+            eval("{}(Seismic(input_name, CONF), \
+                Seismic(output_name, CONF))".format(
+                    command.replace(' ', '_').lower()))
+            # interval_to_rms(
+            #     Seismic(input_name, CONF), Seismic(output_name, CONF))
             self.statusBar().showMessage('')
 # endregion
     # shared slots ------------------------------------------------------------
