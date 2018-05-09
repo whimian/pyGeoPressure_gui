@@ -66,6 +66,8 @@ from pygeopressure_gui.config import CONF
 
 from pygeopressure_gui.calculation.velocity_conversion import (
     interval_to_rms, rms_to_interval, interval_to_average, average_to_interval)
+from pygeopressure_gui.calculation.velocity_to_density_conversion import \
+    velocity_to_density_conversion
 
 # Main Window =================================================================
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -92,10 +94,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.actionSegy.triggered.connect(self.create_segy_import_dialog)
         self.actionExportSegy.triggered.connect(self.create_segy_export_dialog)
         # toolbox
+        # update ui
         self.toolBox.currentChanged.connect(
             self.update_velocity_conversion_panel)
+        self.toolBox.currentChanged.connect(
+            self.update_tdc_panel)
+        self.toolBox.currentChanged.connect(
+            self.update_density_panel)
+        # buttons
         self.runButton_Velocity_Conversion.clicked.connect(
             self.run_velocity_conversion)
+        self.runButton_gardner.clicked.connect(
+            self.run_density_conversion)
 
         self.DataTree.itemClicked.connect(self.handleItemChecked)
         # self.statusBar().showMessage("System Status | Normal")
@@ -307,7 +317,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         ax = self.mayavi_widget.visualization.scene. \
             mlab.axes(
                 xlabel='inline', ylabel='crline', zlabel='depth',
-                ranges=[200, 650, 700, 1100, 1100, 400])
+                ranges=[
+                    seis_object.survey_setting.startInline,
+                    seis_object.survey_setting.endInline,
+                    seis_object.survey_setting.startCrline,
+                    seis_object.survey_setting.endCrline,
+                    seis_object.survey_setting.endDepth,
+                    seis_object.survey_setting.startDepth])
         ax.axes.label_format = '%.0f'
 
         self.mayavi_widget.visualization.scene.mlab.colorbar(
@@ -424,6 +440,44 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             eval("{}(Seismic(input_name, CONF), \
                 Seismic(output_name, CONF))".format(
                     command.replace(' ', '_').lower()))
+            # interval_to_rms(
+            #     Seismic(input_name, CONF), Seismic(output_name, CONF))
+            self.statusBar().showMessage('')
+    # Time Depth Conversion Panel ---------------------------------------------
+    @pyqtSlot(int)
+    def update_tdc_panel(self, tab_index):
+        if tab_index == 1:
+            for fname in get_data_files(CONF.seismic_dir):
+                seis = Seismic(fname, CONF)
+                seis.from_file()
+                if seis.Property_Type == "Velocity":
+                    self.avg_vel_comboBox.addItem(seis.name)
+                self.input_for_tdc_comboBox.addItem(seis.name)
+    # Density Conversion Panel ------------------------------------------------
+    @pyqtSlot(int)
+    def update_density_panel(self, tab_index):
+        if tab_index == 2:
+            for fname in get_data_files(CONF.seismic_dir):
+                seis = Seismic(fname, CONF)
+                seis.from_file()
+                if seis.Property_Type == "Velocity":
+                    self.interval_velocity_comboBox_gardner.addItem(seis.name)
+
+    def run_density_conversion(self):
+        input_name = self.interval_velocity_comboBox_gardner.currentText()
+        output_name = self.ouput_lineEdit_gardner.text()
+        if output_name != "" and \
+                not output_name in get_data_files(CONF.seismic_dir):
+            self.statusBar().showMessage("Creating new seismic Object ...")
+            create_new_seismic_file(output_name, input_name, CONF)
+            self.populate_treeWidget()
+            # command = self.conversion_type_comboBox.currentText()
+            self.statusBar().showMessage("Calculating Density ...")
+            gardner_c = float(self.gardner_C_lineEdit.text())
+            gardner_d = float(self.gardner_D_lineEdit.text())
+            velocity_to_density_conversion(
+                Seismic(input_name, CONF), Seismic(output_name, CONF),
+                gardner_c, gardner_d)
             # interval_to_rms(
             #     Seismic(input_name, CONF), Seismic(output_name, CONF))
             self.statusBar().showMessage('')

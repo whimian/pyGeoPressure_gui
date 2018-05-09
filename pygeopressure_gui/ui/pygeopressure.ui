@@ -212,7 +212,7 @@
            <x>0</x>
            <y>0</y>
            <width>241</width>
-           <height>109</height>
+           <height>181</height>
           </rect>
          </property>
          <layout class="QFormLayout" name="formLayout_4">
@@ -227,7 +227,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QComboBox" name="comboBox_6"/>
+           <widget class="QComboBox" name="avg_vel_comboBox"/>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_7">
@@ -237,7 +237,7 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QComboBox" name="comboBox_7"/>
+           <widget class="QComboBox" name="input_for_tdc_comboBox"/>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="label_8">
@@ -247,9 +247,9 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QLineEdit" name="lineEdit_5"/>
+           <widget class="QLineEdit" name="output_lineEdit_TDC"/>
           </item>
-          <item row="3" column="0">
+          <item row="6" column="0">
            <spacer name="horizontalSpacer_4">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -262,12 +262,42 @@
             </property>
            </spacer>
           </item>
-          <item row="3" column="1">
+          <item row="6" column="1">
            <widget class="QPushButton" name="pushButton_4">
             <property name="text">
              <string>Run</string>
             </property>
            </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_19">
+            <property name="text">
+             <string>Start Depth</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="startDepth_lineEdit_TDC"/>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_20">
+            <property name="text">
+             <string>End Depth</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QLineEdit" name="endDepth_lineEdit_TDC"/>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="label_21">
+            <property name="text">
+             <string>Step Depth</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QLineEdit" name="stepDepth_lineEdit_TDC"/>
           </item>
          </layout>
         </widget>
@@ -300,22 +330,30 @@
           <item row="0" column="0">
            <widget class="QLabel" name="label_11">
             <property name="text">
-             <string>           Gardner A</string>
+             <string>           Gardner C</string>
             </property>
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="lineEdit_2"/>
+           <widget class="QLineEdit" name="gardner_C_lineEdit">
+            <property name="text">
+             <string>0.31</string>
+            </property>
+           </widget>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_12">
             <property name="text">
-             <string>Gardner B</string>
+             <string>Gardner D</string>
             </property>
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QLineEdit" name="lineEdit_3"/>
+           <widget class="QLineEdit" name="gardner_D_lineEdit">
+            <property name="text">
+             <string>0.25</string>
+            </property>
+           </widget>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="label_9">
@@ -325,7 +363,7 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QComboBox" name="comboBox_5"/>
+           <widget class="QComboBox" name="interval_velocity_comboBox_gardner"/>
           </item>
           <item row="3" column="0">
            <widget class="QLabel" name="label_10">
@@ -335,7 +373,7 @@
            </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QLineEdit" name="lineEdit"/>
+           <widget class="QLineEdit" name="ouput_lineEdit_gardner"/>
           </item>
           <item row="4" column="0">
            <spacer name="horizontalSpacer_5">
@@ -351,7 +389,7 @@
            </spacer>
           </item>
           <item row="4" column="1">
-           <widget class="QPushButton" name="pushButton_5">
+           <widget class="QPushButton" name="runButton_gardner">
             <property name="text">
              <string>Run</string>
             </property>
