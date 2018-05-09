@@ -18,6 +18,8 @@ from PyQt4 import uic
 from PyQt4.QtCore import Qt
 
 from pygeopressure_gui.ui.ui_seismic_manager import Ui_seismic_manager_Dialog
+from pygeopressure_gui.dialogs.segy_import_one_dialog import \
+    SegyImportOneDialog
 from pygeopressure_gui.basic.utils import get_data_files
 from pygeopressure_gui.config import CONF
 
@@ -30,6 +32,7 @@ class SeismicManagerDialog(QDialog, Ui_seismic_manager_Dialog):
         # connect
         self.data_list_Widget.itemSelectionChanged.connect(
             self.display_data_info)
+        self.importButton.clicked.connect(self.open_import_dialog)
 
     def initUI(self):
         self.load_data_list()
@@ -63,3 +66,7 @@ class SeismicManagerDialog(QDialog, Ui_seismic_manager_Dialog):
                         data_dict['z_range'][1],
                         data_dict['z_range'][2])
                 self.seismic_info_textEdit.setPlainText(info_string)
+
+    def open_import_dialog(self):
+        segy_import_dialog = SegyImportOneDialog()
+        segy_import_dialog.exec_()

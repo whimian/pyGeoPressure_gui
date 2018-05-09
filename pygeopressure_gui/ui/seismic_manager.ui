@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>519</width>
-    <height>517</height>
+    <width>381</width>
+    <height>430</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,9 +16,9 @@
   <widget class="QListWidget" name="data_list_Widget">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>30</y>
-     <width>431</width>
+     <x>10</x>
+     <y>20</y>
+     <width>281</width>
      <height>251</height>
     </rect>
    </property>
@@ -26,20 +26,20 @@
   <widget class="QTextEdit" name="seismic_info_textEdit">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>290</y>
-     <width>431</width>
-     <height>181</height>
+     <x>10</x>
+     <y>280</y>
+     <width>361</width>
+     <height>111</height>
     </rect>
    </property>
   </widget>
   <widget class="QPushButton" name="importButton">
    <property name="geometry">
     <rect>
-     <x>440</x>
-     <y>10</y>
+     <x>300</x>
+     <y>20</y>
      <width>71</width>
-     <height>31</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="text">
@@ -49,10 +49,10 @@
   <widget class="QPushButton" name="closeButton">
    <property name="geometry">
     <rect>
-     <x>330</x>
-     <y>480</y>
-     <width>101</width>
-     <height>31</height>
+     <x>280</x>
+     <y>400</y>
+     <width>80</width>
+     <height>22</height>
     </rect>
    </property>
    <property name="text">
@@ -62,10 +62,10 @@
   <widget class="QPushButton" name="deleteButton">
    <property name="geometry">
     <rect>
-     <x>440</x>
-     <y>80</y>
+     <x>300</x>
+     <y>200</y>
      <width>71</width>
-     <height>31</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="text">
@@ -75,10 +75,10 @@
   <widget class="QPushButton" name="pushButton_4">
    <property name="geometry">
     <rect>
-     <x>440</x>
-     <y>120</y>
+     <x>300</x>
+     <y>140</y>
      <width>71</width>
-     <height>31</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="text">
@@ -89,13 +89,26 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>10</y>
+     <y>0</y>
      <width>231</width>
-     <height>17</height>
+     <height>20</height>
     </rect>
    </property>
    <property name="text">
     <string>Seismic data in survey directory</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="importButton_2">
+   <property name="geometry">
+    <rect>
+     <x>300</x>
+     <y>100</y>
+     <width>71</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Edit</string>
    </property>
   </widget>
  </widget>
