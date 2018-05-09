@@ -66,8 +66,12 @@ from pygeopressure_gui.config import CONF
 
 from pygeopressure_gui.calculation.velocity_conversion import (
     interval_to_rms, rms_to_interval, interval_to_average, average_to_interval)
-from pygeopressure_gui.calculation.velocity_to_density_conversion import \
-    velocity_to_density_conversion
+from pygeopressure_gui.calculation.velocity_to_density_conversion import (
+    velocity_to_density_conversion)
+from pygeopressure_gui.calculation.obp_calculation import obp_calculation
+from pygeopressure_gui.calculation.eaton_calculation import eaton_calculation
+from pygeopressure_gui.calculation.bowers_calculation import (
+    bowers_calculation)
 
 # Main Window =================================================================
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -80,7 +84,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.program_setting = None
         self.setupUi(self)
         self.initUI()
-        # connect events ------------------------------------------------------
+        # connect slots -------------------------------------------------------
         # menu actions
         self.actionAbout.triggered.connect(self.aboutEvent)
         self.actionNewSurvey.triggered.connect(self.create_survey_edit_dialog)
@@ -97,16 +101,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # update ui
         self.toolBox.currentChanged.connect(
             self.update_velocity_conversion_panel)
-        self.toolBox.currentChanged.connect(
-            self.update_tdc_panel)
-        self.toolBox.currentChanged.connect(
-            self.update_density_panel)
+        self.toolBox.currentChanged.connect(self.update_tdc_panel)
+        self.toolBox.currentChanged.connect(self.update_density_panel)
+        self.toolBox.currentChanged.connect(self.update_obp_panel)
+        self.toolBox.currentChanged.connect(self.update_eaton_panel)
+        self.toolBox.currentChanged.connect(self.update_bowers_panel)
         # buttons
         self.runButton_Velocity_Conversion.clicked.connect(
             self.run_velocity_conversion)
-        self.runButton_gardner.clicked.connect(
-            self.run_density_conversion)
+        self.runButton_gardner.clicked.connect(self.run_density_conversion)
+        self.runButton_OBP.clicked.connect(self.run_obp_calculation)
+        self.runButton_Eaton.clicked.connect(self.run_eaton_calculation)
+        self.runButton_Bowers.clicked.connect(self.run_bowers_calculation)
 
+        # Data Tree
         self.DataTree.itemClicked.connect(self.handleItemChecked)
         # self.statusBar().showMessage("System Status | Normal")
         self.source = None
@@ -478,8 +486,99 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             velocity_to_density_conversion(
                 Seismic(input_name, CONF), Seismic(output_name, CONF),
                 gardner_c, gardner_d)
-            # interval_to_rms(
-            #     Seismic(input_name, CONF), Seismic(output_name, CONF))
+            self.statusBar().showMessage('')
+    # OBP Calculation Panel ---------------------------------------------------
+    @pyqtSlot(int)
+    def update_obp_panel(self, tab_index):
+        if tab_index == 3:
+            self.density_comboBox_OBP.clear()
+            for fname in get_data_files(CONF.seismic_dir):
+                seis = Seismic(fname, CONF)
+                seis.from_file()
+                if seis.Property_Type == "Density":
+                    self.density_comboBox_OBP.addItem(seis.name)
+
+    def run_obp_calculation(self):
+        input_name = self.density_comboBox_OBP.currentText()
+        output_name = self.output_lineEdit_OBP.text()
+        if output_name == "":
+            self.statusBar().showMessage('Please set OUTPUT')
+        elif output_name in get_data_files(CONF.seismic_dir):
+            self.statusBar().showMessage('OUTPUT already exists.')
+        else:
+            self.statusBar().showMessage("Creating new seismic Object ...")
+            create_new_seismic_file(output_name, input_name, CONF)
+            self.populate_treeWidget()
+            self.statusBar().showMessage("Calculating Density ...")
+            obp_calculation(
+                Seismic(input_name, CONF), Seismic(output_name, CONF))
+            self.statusBar().showMessage('')
+    # Eaton Panel -------------------------------------------------------------
+    @pyqtSlot(int)
+    def update_eaton_panel(self, tab_index):
+        if tab_index == 4:
+            self.obp_comboBox_Eaton.clear()
+            self.velocity_comboBox_Eaton.clear()
+            for fname in get_data_files(CONF.seismic_dir):
+                seis = Seismic(fname, CONF)
+                seis.from_file()
+                if seis.Property_Type == "Pressure":
+                    self.obp_comboBox_Eaton.addItem(seis.name)
+                elif seis.Property_Type == "Velocity":
+                    self.velocity_comboBox_Eaton.addItem(seis.name)
+
+    def run_eaton_calculation(self):
+        vel_name = self.velocity_comboBox_Eaton.currentText()
+        obp_name = self.obp_comboBox_Eaton.currentText()
+        output_name = self.output_lineEdit_Eaton.text()
+        n = float(self.eaton_n_spinBox.value())
+        a = float(self.nct_a_lineEdit.text())
+        b = float(self.nct_b_lineEdit.text())
+        if output_name == "":
+            self.statusBar().showMessage('Please set OUTPUT')
+        elif output_name in get_data_files(CONF.seismic_dir):
+            self.statusBar().showMessage('OUTPUT already exists.')
+        else:
+            self.statusBar().showMessage("Creating new seismic Object ...")
+            create_new_seismic_file(output_name, obp_name, CONF)
+            self.populate_treeWidget()
+            self.statusBar().showMessage("Calculating Eaton Pressure ...")
+            eaton_calculation(
+                Seismic(obp_name, CONF), Seismic(vel_name, CONF),
+                Seismic(output_name, CONF), a, b, n)
+            self.statusBar().showMessage('')
+    # Bowers Panel ------------------------------------------------------------
+    @pyqtSlot(int)
+    def update_bowers_panel(self, tab_index):
+        if tab_index == 5:
+            self.obp_comboBox_Bowers.clear()
+            self.vel_comboBox_Bowers.clear()
+            for fname in get_data_files(CONF.seismic_dir):
+                seis = Seismic(fname, CONF)
+                seis.from_file()
+                if seis.Property_Type == "Pressure":
+                    self.obp_comboBox_Bowers.addItem(seis.name)
+                elif seis.Property_Type == "Velocity":
+                    self.vel_comboBox_Bowers.addItem(seis.name)
+
+    def run_bowers_calculation(self):
+        vel_name = self.vel_comboBox_Bowers.currentText()
+        obp_name = self.obp_comboBox_Bowers.currentText()
+        output_name = self.output_lineEdit_Bowers.text()
+        a = float(self.a_lineEdit_Bowers.text())
+        b = float(self.b_lineEdit_Bowers.text())
+        if output_name == "":
+            self.statusBar().showMessage('Please set OUTPUT')
+        elif output_name in get_data_files(CONF.seismic_dir):
+            self.statusBar().showMessage('OUTPUT already exists.')
+        else:
+            self.statusBar().showMessage("Creating new seismic Object ...")
+            create_new_seismic_file(output_name, obp_name, CONF)
+            self.populate_treeWidget()
+            self.statusBar().showMessage("Calculating Bowers Pressure ...")
+            bowers_calculation(
+                Seismic(obp_name, CONF), Seismic(vel_name, CONF),
+                Seismic(output_name, CONF), a, b)
             self.statusBar().showMessage('')
 # endregion
     # shared slots ------------------------------------------------------------
