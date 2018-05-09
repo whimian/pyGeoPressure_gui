@@ -141,14 +141,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             child = item.child(i)
             child_name = child.text(0)
             if child.checkState(0) == Qt.Checked:
-                self.statusBar().showMessage(
-                    'Displaying Data {}'.format(child_name))
-                self.plot_seis(child_name) # Plot seismic data
+                if not hasattr(self, "source_{}".format(child_name)):
+                    self.statusBar().showMessage(
+                        'Displaying Data {}'.format(child_name))
+                    self.plot_seis(child_name) # Plot seismic data
             elif child.checkState(0) == Qt.Unchecked:
-                self.statusBar().showMessage('Unchecked')
+                self.statusBar().showMessage('Unchecked', msecs=500)
                 if hasattr(self, "source_{}".format(child_name)):
                     source = getattr(self, "source_{}".format(child_name))
                     source.remove()
+                    delattr(self, "source_{}".format(child_name))
 
     def populate_treeWidget(self):
         survey_file = Path(CONF.data_root, CONF.current_survey, '.survey')
