@@ -4,6 +4,8 @@
 
 GUI built on PyQt4 for pyGeoPressure
 
+![Screen Shot](screen_shot.png)
+
 # Usage
 
 As a user:
